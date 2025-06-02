@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/font/AvenirLTStd-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: 'Avenir';
+  src: url('./assets/font/AvenirLTStd-Black.otf') format('opentype');
+  font-weight: 700; /* Avenir Black is typically heavier; use 700 or 900 if it's bold */
+  font-style: normal;
+}
