@@ -10,6 +10,9 @@ export default {
         primary: '#03276B',
         secondary: '#DEDEDE',
         'base': '#1E1E1E',
+        'grey-light': "#B3B3B3",
+        "base-red": '#C52F31',
+        "base-red-200": '#C52F311A'
       },
       fontFamily: {
         Avenir: ['Avenir', 'sans-serif'],
@@ -21,6 +24,10 @@ export default {
 
       borderRadius: {
         md: '8px'
+      },
+      backgroundImage: {
+        'gray-flat': 'linear-gradient(211.26deg, #DEDEDE -239.13%, rgba(222, 222, 222, 0) 69.97%)',
+        
       },
 
     },
