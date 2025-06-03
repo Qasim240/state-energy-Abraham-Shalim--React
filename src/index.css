@@ -6,6 +6,12 @@
 
 @font-face {
   font-family: 'Avenir';
+  src: url('./assets/font/AvenirLTStd-Book.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal; 
+}
+@font-face {
+  font-family: 'Avenir';
   src: url('./assets/font/AvenirLTStd-Medium.otf') format('opentype');
   font-weight: 500;
   font-style: normal; 
