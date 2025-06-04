@@ -3,9 +3,10 @@ import PrimaryHeading from '../PrimaryHeading'
 import BillingCard from '../BillingCard'
 import { arrowRight, monthlyBillIcon } from '../../../../imagesPath'
 import PrimaryBtn from '../PrimaryBtn'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
-    
+
     return (
         <>
             <div className='text-center mt-10'>
@@ -25,9 +26,11 @@ const Home = () => {
             </div>
 
             <div className='text-center mt-[48px]'>
-                <PrimaryBtn className='py-4' icon={arrowRight}>
-                    Proceed with Order
-                </PrimaryBtn>
+                <Link to="/collection">
+                    <PrimaryBtn className='py-4' icon={arrowRight}>
+                        Proceed with Order
+                    </PrimaryBtn>
+                </Link>
             </div>
 
         </>

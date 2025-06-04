@@ -27,7 +27,9 @@ export default {
       },
       backgroundImage: {
         'gray-flat': 'linear-gradient(211.26deg, #DEDEDE -239.13%, rgba(222, 222, 222, 0) 69.97%)',
-        
+        'blue-flat': 'linear-gradient(200.57deg, #C1D8F7 -152.32%, #FFFFFF 54.74%)',
+   
+
       },
 
     },
