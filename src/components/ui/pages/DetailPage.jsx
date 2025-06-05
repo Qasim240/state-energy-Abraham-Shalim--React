@@ -1,29 +1,26 @@
 import React from 'react'
-import { categoryIcon, detailBanner } from '../../../../imagesPath'
+import { useParams } from 'react-router-dom'
+import Roof from '../productCategories/Roof'
+import Hvac from '../productCategories/Hvac'
+import Solar from '../productCategories/Solar'
+import Insulation from '../productCategories/Insulation'
+// import Doors from '../productCategories/Doors'
+// import NotFound from '../common/NotFound'
 
 const DetailPage = () => {
-    return (
-        <>
+    const { category } = useParams()
 
-            <div class="grid grid-cols-12 gap-4">
-                <div className='col-span-4'>
-                    <img src={detailBanner} alt="" />
+    const categoryComponents = {
+        roof: Roof,
+        solar: Solar,
+        hvac: Hvac,
+        insulation: Insulation,
 
-                </div>
-                <div className='col-span-8'>
+    }
 
-                    <div className='flex items-center'>
-                        <img src={categoryIcon} alt={categoryIcon} />
-                        <span className='font-Avenir font-medium'>Choose Category</span>
-                    </div>
+    const SelectedComponent = categoryComponents[category?.toLowerCase()]
 
-
-                </div>
-            </div>
-
-
-        </>
-    )
+    return SelectedComponent ? <SelectedComponent /> : <NotFound />
 }
 
 export default DetailPage

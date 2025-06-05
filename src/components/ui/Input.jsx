@@ -1,13 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { eyeClose, eyeOpen } from '../../../imagesPath';
 import { validaionBorder } from '../utils/ValidationBorder';
+import VerticalSeparator from '../utils/VerticalSeparator';
 
-const Input = ({ type = 'text', label, placeholder, error, id, ...props }, ref) => {
+const Input = (
+    { type = 'text', label, placeholder, error, id, unit, className = '', ...props },
+    ref
+) => {
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
+    const isTextarea = type === 'textarea';
+    const isUnit = !!unit;
+
+    const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
     return (
-        <div className={`relative ${type === 'checkbox' ? '' : 'mb-10'}`}>
+        <div className={`relative ${type === 'checkbox' ? '' : 'lg:mb-10 mb-5'}`}>
             {label && (
                 <label
                     htmlFor={id}
@@ -16,33 +24,58 @@ const Input = ({ type = 'text', label, placeholder, error, id, ...props }, ref) 
                     {label}
                 </label>
             )}
-            <input
-                id={id}
-                type={isPassword ? (showPassword ? 'text' : 'password') : type}
-                placeholder={placeholder}
-                className={`border font-Avenir font-normal border-solid w-full px-[24px] py-[15px] focus:outline-none rounded-md font-myfont pr-[50px] ${validaionBorder(error)}`}
-                {...props}
-            />
-            {/* Error message with smooth animation */}
+
+            {/* Render input or textarea */}
+            {isTextarea ? (
+                <textarea
+                    id={id}
+                    ref={ref}
+                    placeholder={placeholder}
+                    className={`border font-Avenir font-normal border-solid w-full px-[24px] py-[15px] focus:outline-none rounded-md font-myfont pr-[50px] resize-none ${validaionBorder(error)} ${className}`}
+                    {...props}
+                />
+            ) : (
+                <input
+                    id={id}
+                    ref={ref}
+                    type={inputType}
+                    placeholder={placeholder}
+                    className={`border font-Avenir font-normal border-solid w-full px-[24px] py-[15px] focus:outline-none rounded-md font-myfont pr-[50px] ${validaionBorder(error)} ${className}`}
+                    {...props}
+                />
+            )}
+
+            {/* Error message */}
             <p
-                className={`text-red-500 text-sm overflow-hidden transition-all duration-300 ease-in-out ${
-                    error ? 'max-h-10 opacity-100 mt-1' : 'max-h-0 opacity-0 mt-0'
-                }`}
+                className={`text-red-500 text-sm overflow-hidden transition-all duration-300 ease-in-out ${error ? 'max-h-10 opacity-100 mt-1' : 'max-h-0 opacity-0 mt-0'
+                    }`}
             >
                 {error || '\u00A0'}
             </p>
+
+            {/* Show/hide password toggle */}
             {isPassword && (
                 <button
                     type="button"
-                    onClick={() => setShowPassword(prev => !prev)}
+                    onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute inset-y-7 right-4 -translate-y-1/2 flex items-center justify-center h-[38px] w-[38px]"
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
-                    {showPassword ? <img src={eyeOpen} alt="Show password" /> : <img src={eyeClose} alt="Hide password" />}
+                    <img src={showPassword ? eyeOpen : eyeClose} alt={showPassword ? 'Show password' : 'Hide password'} />
                 </button>
+            )}
+
+            {/* Unit display (e.g., kg) */}
+            {isUnit && !isTextarea && (
+                <div className="absolute inset-y-7 right-4 -translate-y-1/2 flex items-center justify-center h-[38px] w-auto">
+                    <div className="flex items-center gap-3">
+                        <VerticalSeparator />
+                        <span className="text-[#BBBBBB] font-Avenir font-normal uppercase">{unit}</span>
+                    </div>
+                </div>
             )}
         </div>
     );
 };
 
-export default Input;
+export default forwardRef(Input);

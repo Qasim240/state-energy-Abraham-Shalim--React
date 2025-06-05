@@ -14,7 +14,11 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<MainLayout ><Home /></MainLayout>} />
         <Route path="/collection" element={<MainLayout ><Collection /></MainLayout>} />
-        <Route path="/detail" element={<MainLayout ><DetailPage /></MainLayout>} />
+        {/* <Route path="/detail" element={<MainLayout ><DetailPage /></MainLayout>} /> */}
+        <Route
+          path="/collection/:category"
+          element={<MainLayout><DetailPage /></MainLayout>}
+        />
       </Routes>
     </>
   )

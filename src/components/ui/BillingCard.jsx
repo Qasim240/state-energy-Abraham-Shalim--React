@@ -12,7 +12,7 @@ const BillingCard = ({ title, icon, initialAmount =2000, maxAmount = 10000  }) =
     const fillPercent = (amount / maxAmount) * 100;
 
     return (
-        <div className="border border-secondary p-4 mt-4 rounded-[16px] bg-gray-100">
+        <div className="border border-secondary p-4 mt-4 rounded-large bg-gray-100">
 
             <div className="flex items-center gap-3 mb-2">
                 <img src={icon} alt="icon" />

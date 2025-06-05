@@ -4,62 +4,23 @@ import { collectionImg, door, roof, solarPenels, installatioBanner, heater } fro
 
 const Collection = () => {
 
-    const Collections = [
-        {
-            title: "HVAC",
-            collectionImg: collectionImg
-        },
-        {
-            title: "SOLAR",
-            collectionImg: solarPenels
-        },
-        {
-            title: "ROOF",
-            collectionImg: roof
-        },
-        {
-            title: "DOORS",
-            collectionImg: door
-        },
-        {
-            title: "Insulation",
-            collectionImg: installatioBanner
-        },
-        {
-            title: "Water Heater",
-            collectionImg: heater
-        },
-         {
-            title: "DOORS",
-            collectionImg: door
-        },
-        {
-            title: "HVAC",
-            collectionImg: collectionImg
-        },
-    ]
+    const collections = [
+        { title: 'HVAC', slug: 'hvac', img: collectionImg },
+        { title: 'SOLAR', slug: 'solar', img: solarPenels },
+        { title: 'ROOF', slug: 'roof', img: roof },
+        { title: 'DOORS', slug: 'doors', img: door },
+        { title: 'INSULATION', slug: 'insulation', img: installatioBanner },
+        { title: 'WATER HEATER', slug: 'water-heater', img: heater },
+    ];
 
 
     return (
 
-        <div class="grid lg:grid-cols-4 grid-cols-2 gap-4">
-            {Collections.map((collection, index) => (
-                <div key={index}>
-                    <CollectionCard title={collection.title} thumbnailImg={collection.collectionImg} />
-                </div>
+        <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
+            {collections.map(({ title, slug, img }) => (
+                <CollectionCard key={slug} title={title} slug={slug} thumbnailImg={img} />
             ))}
-
-
-
-
         </div>
-
-
-
-
-
-
-
 
     )
 }

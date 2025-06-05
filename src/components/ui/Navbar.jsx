@@ -17,7 +17,7 @@ const Navbar = () => {
     }, [])
 
     return (
-        <nav className="container py-10">
+        <nav className="container lg:py-10 md:pt-5 md:pb-4 py-3">
             <div className="flex justify-between items-center">
                 <div className="flex items-center lg:gap-5 gap-0">
                     <a href="/home">
@@ -45,7 +45,7 @@ const Navbar = () => {
 
                     {/* Dropdown */}
                     <div
-                        className={`absolute top-[120%] right-0 mt-2 w-64 bg-white border border-gray-200 shadow-xl rounded-[16px] p-3 z-50 overflow-hidden transition-all duration-100 transform ${openDropdown
+                        className={`absolute top-[120%] right-0 mt-2 w-64 bg-white border border-gray-200 shadow-xl rounded-large p-3 z-50 overflow-hidden transition-all duration-100 transform ${openDropdown
                             ? 'opacity-100 scale-100 visible'
                             : 'opacity-0 scale-95 invisible pointer-events-none'
                             }`}
