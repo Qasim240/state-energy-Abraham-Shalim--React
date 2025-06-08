@@ -4,7 +4,7 @@ import Roof from '../productCategories/Roof'
 import Hvac from '../productCategories/Hvac'
 import Solar from '../productCategories/Solar'
 import Insulation from '../productCategories/Insulation'
-// import Doors from '../productCategories/Doors'
+import Doors from '../productCategories/Doors'
 // import NotFound from '../common/NotFound'
 
 const DetailPage = () => {
@@ -15,6 +15,7 @@ const DetailPage = () => {
         solar: Solar,
         hvac: Hvac,
         insulation: Insulation,
+        doors: Doors,
 
     }
 

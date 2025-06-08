@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
     categoryIcon,
     detailBanner,
+    hvac,
     infoCircleIcon,
     orderSpec,
 } from '../../../../imagesPath';
@@ -21,9 +22,6 @@ const Hvac = () => {
 
 
 
-
-
-
     const toggleAdder = (adder) =>
         setSelectedAdders((prev) =>
             prev.includes(adder)
@@ -35,7 +33,7 @@ const Hvac = () => {
         <div className="grid grid-cols-12 gap-4">
 
             <div className="col-span-12 md:col-span-4 hidden md:block">
-                <Image className="w-[100%]" img={detailBanner} />
+                <Image className="w-[100%]" img={hvac} />
             </div>
 
 

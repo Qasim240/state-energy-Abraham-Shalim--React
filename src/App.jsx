@@ -7,7 +7,6 @@ import Login from './components/ui/pages/Login'
 import { Routes, Route } from 'react-router-dom'
 function App() {
 
-
   return (
     <>
       <Routes>

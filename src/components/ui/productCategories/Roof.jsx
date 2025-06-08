@@ -28,7 +28,6 @@ const Roof = () => {
 
     return (
         <div className="grid grid-cols-12 gap-4">
-
             <div className="col-span-12 md:col-span-4 hidden md:block">
                 <Image className="w-[100%]" img={detailBanner} />
             </div>
