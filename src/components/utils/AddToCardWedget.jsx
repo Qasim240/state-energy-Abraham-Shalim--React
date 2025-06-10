@@ -3,13 +3,14 @@ import { calcicon } from '../../../imagesPath'
 import PrimaryBtn from '../ui/PrimaryBtn'
 import Image from './Image'
 
-const AddToCardWedget = ({ totalPrice }) => {
+const AddToCardWedget = ({ totalPrice, className = '', ...props }) => {
     return (
-        <div className='mt-auto border mb-4 bg-[#F1F6FF] border-primary rounded-large p-4 flex lg:justify-between justify-center items-center flex-wrap gap-4'>
+        <div className={`mt-auto border mb-4 bg-[#F1F6FF] rounded-large border-primary large p-4 flex lg:justify-between justify-center items-center flex-wrap gap-4 ${className}`}  {...props}>
+
             <div className='flex items-center gap-4'>
                 <Image img={calcicon} />
                 <div>
-                    <p className='text-primary font-Avenir font-medium'> Estimated Price</p>
+                    <p className='text-primary font-Avenir font-medium'>Estimated Price</p>
                     <p className='font-Avenir font-normal text-base-dark text-[14px]'>The price may vary based on the current rate.</p>
                 </div>
             </div>

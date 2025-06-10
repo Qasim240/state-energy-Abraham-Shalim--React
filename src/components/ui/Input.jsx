@@ -10,12 +10,17 @@ const Input = (
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
     const isTextarea = type === 'textarea';
+    const ischeckBox = type === 'checkbox';
     const isUnit = !!unit;
+    const inputBorder = 'border font-Avenir font-normal border-solid w-full px-[24px] py-[15px] focus:outline-none rounded-md font-myfont pr-[50px]'
 
     const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+    const CheckBox = ischeckBox ? `${inputBorder}` : ''
+
+
 
     return (
-        <div className={`relative ${type === 'checkbox' ? '' : 'lg:mb-10 mb-5'}`}>
+        <div className={`relative ${type === 'checkbox' ? '' : 'lg:mb-10 mb-5'} ${CheckBox}`}>
             {label && (
                 <label
                     htmlFor={id}
@@ -31,7 +36,7 @@ const Input = (
                     id={id}
                     ref={ref}
                     placeholder={placeholder}
-                    className={`border font-Avenir font-normal border-solid w-full px-[24px] py-[15px] focus:outline-none rounded-md font-myfont pr-[50px] resize-none ${validaionBorder(error)} ${className}`}
+                    className={` resize-none ${validaionBorder(error)} ${className}`}
                     {...props}
                 />
             ) : (
@@ -40,7 +45,7 @@ const Input = (
                     ref={ref}
                     type={inputType}
                     placeholder={placeholder}
-                    className={`border font-Avenir font-normal border-solid w-full px-[24px] py-[15px] focus:outline-none rounded-md font-myfont pr-[50px] ${validaionBorder(error)} ${className}`}
+                    className={`${inputBorder}  ${validaionBorder(error)} ${className}`}
                     {...props}
                 />
             )}

@@ -17,6 +17,7 @@ const Counter = forwardRef(
         const clamp = (v) => Math.max(min, Math.min(max, v));
         const set = (v) => onChange(clamp(v));
 
+        const btnSimilarStyle = "w-8 h-8 flex items-center justify-center rounded-md bg-[#F1F6FF] text-primary font-extrabold hover:bg-blue-100 disabled:opacity-30"
         return (
 
             <div className={`relative mb-6 border border-solid rounded-md border-gray ${className}`}>
@@ -29,7 +30,7 @@ const Counter = forwardRef(
                     </label>
                 )}
 
-                <div className="flex items-center justify-between  px-4 w-fit font-Avenir font-normal  py-[15px] focus:outline-none  pr-[50px]">
+                <div className="flex items-center justify-between gap-4 w-full px-4 font-Avenir font-normal  py-[15px] focus:outline-none">
 
 
                     <input
@@ -39,25 +40,27 @@ const Counter = forwardRef(
                         inputMode="numeric"
                         value={value}
                         onChange={(e) => set(Number(e.target.value))}
-                        className=" font-Avenir font-normal focus:outline-none font-myfont pr-[50px]"
+                        className="font-Avenir font-normal focus:outline-none font-myfont"
                     />
-                    <button
-                        type="button"
-                        onClick={() => set(value - step)}
-                        disabled={value <= min}
-                        className="w-8 h-8 flex items-center justify-center rounded-md bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-30"
-                    >
-                        &minus;
-                    </button>
+                    <div className="flex items-center gap-3 absolute right-4">
+                        <button
+                            type="button"
+                            onClick={() => set(value - step)}
+                            disabled={value <= min}
+                            className={` ${btnSimilarStyle} `}
+                        >
+                            &minus;
+                        </button>
 
-                    <button
-                        type="button"
-                        onClick={() => set(value + step)}
-                        disabled={value >= max}
-                        className="w-8 h-8 flex items-center justify-center bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-30"
-                    >
-                        +
-                    </button>
+                        <button
+                            type="button"
+                            onClick={() => set(value + step)}
+                            disabled={value >= max}
+                            className={` ${btnSimilarStyle}`}
+                        >
+                            +
+                        </button>
+                    </div>
 
                 </div>
             </div>

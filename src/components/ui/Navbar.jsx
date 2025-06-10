@@ -36,8 +36,7 @@ const Navbar = () => {
                         <img src={shoppingBag} alt="bag" className="w-5 h-5" />
                     </button>
 
-                    <button
-                        onClick={() => setOpenDropdown(!openDropdown)}
+                    <button onClick={() => setOpenDropdown(!openDropdown)}
                         className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-900 font-semibold text-sm"
                     >
                         EO
@@ -45,7 +44,7 @@ const Navbar = () => {
 
                     {/* Dropdown */}
                     <div
-                        className={`absolute top-[120%] right-0 mt-2 w-64 bg-white border border-gray-200 shadow-xl rounded-large p-3 z-50 overflow-hidden transition-all duration-100 transform ${openDropdown
+                        className={`absolute top-[120%] rounded-large right-0 mt-2 w-64 bg-white border border-gray-200 shadow-xl large p-3 z-50 overflow-hidden transition-all duration-100 transform ${openDropdown
                             ? 'opacity-100 scale-100 visible'
                             : 'opacity-0 scale-95 invisible pointer-events-none'
                             }`}

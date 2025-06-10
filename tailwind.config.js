@@ -25,7 +25,7 @@ export default {
 
       borderRadius: {
         md: '8px',
-        'large': '16px',
+        large: '16px',
 
       },
       backgroundImage: {
