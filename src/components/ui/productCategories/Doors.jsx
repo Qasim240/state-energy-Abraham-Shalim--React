@@ -8,6 +8,8 @@ import Input from '../Input';
 import Dropdown from '../Dropdown';
 import Counter from '../../utils/Counter';
 import AddToCardWedget from '../../utils/AddToCardWedget';
+import Slider from 'react-slick';
+import CustomSlider from '../../utils/CustomSlider';
 
 
 
@@ -58,7 +60,7 @@ const Doors = () => {
     return (
         <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 md:col-span-4 hidden md:block">
-                <Image className="w-[100%]" img={hvac} />
+                <CustomSlider />
             </div>
 
 
@@ -153,7 +155,6 @@ const Doors = () => {
                             )}
                         </div>
                     ))}
-
 
                     <AddToCardWedget className='sticky bottom-0' totalPrice="5000" />
 
