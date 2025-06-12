@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 const CollectionCard = ({ title, slug, thumbnailImg }) => {
     return (
-        <div className='border border-secondary p-4 sm:p-6 md:p-8 lg:p-[30px] large bg-blue-flat relative h-[220px] sm:h-[250px] lg:h-[300px] overflow-hidden'>
+        <div className='border border-secondary p-4 sm:p-6 md:p-8 lg:p-[30px] large bg-blue-flat relative h-[220px] sm:h-[250px] rounded-lg lg:h-[300px] overflow-hidden'>
             <p className='font-Avenir uppercase font-extrabold text-[18px] sm:text-[20px] lg:text-[21px] pb-4 sm:pb-5 text-left'>
                 {title}
             </p>

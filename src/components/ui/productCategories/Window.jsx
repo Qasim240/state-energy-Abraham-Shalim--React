@@ -1,29 +1,28 @@
-import React, { useState } from 'react';
-import IconHeading from '../../utils/IconHeading';
-import { arrowUpIcon, arrowDownIcon, deleteIcon, doorIcon, infoCircleIcon, orderSpec, addmoreIcon, hvac, doorsSliderBanner } from '../../../../imagesPath';
-import Image from '../../utils/Image';
-import VerticalSeparator from '../../utils/VerticalSeparator';
-import PrimaryBtn from '../PrimaryBtn';
-import Input from '../Input';
-import Dropdown from '../Dropdown';
-import Counter from '../../utils/Counter';
-import AddToCardWedget from '../../utils/AddToCardWedget';
-import Slider from 'react-slick';
-import CustomSlider from '../../utils/CustomSlider';
 
+import React, { useState } from 'react'
+import CustomSlider from '../../utils/CustomSlider'
+import IconHeading from '../../utils/IconHeading'
+import PrimaryBtn from '../PrimaryBtn'
+import Image from '../../utils/Image'
+import Input from '../Input'
+import Dropdown from '../Dropdown'
+import Counter from '../../utils/Counter'
+import AddToCardWedget from '../../utils/AddToCardWedget'
+import { addmoreIcon, arrowUpIcon, deleteIcon, doorIcon, hvac, infoCircleIcon, orderSpec, windowBanner, windowSliderbanner } from '../../../../imagesPath'
+import VerticalSeparator from '../../utils/VerticalSeparator'
 
+const Window = () => {
 
-const doorTypeOptions = ['French', 'Sliding', 'Glass', 'Flush doors'];
-const colorOptions = ['White', 'Black', 'Green', 'Brown'];
-const sliderbanner = [doorsSliderBanner, doorsSliderBanner, doorsSliderBanner];
+    const windowTypeOptions = ['French', 'Sliding', 'Glass', 'Flush window'];
+    const colorOptions = ['White', 'Black', 'Green', 'Brown'];
+    const sliderbanner = [windowSliderbanner, windowSliderbanner, windowSliderbanner];
 
-const Doors = () => {
-    const [doors, setDoors] = useState([
+    const [window, setWindow] = useState([
         { id: Date.now(), height: '', width: '', type: '', frameColor: '', tintColor: '', qty: 0, isOpen: true }
     ]);
 
-    const handleAddDoor = () => {
-        setDoors(prev => [
+    const handleAddWindow = () => {
+        setWindow(prev => [
             ...prev,
             {
                 id: Date.now(),
@@ -38,25 +37,26 @@ const Doors = () => {
         ]);
     };
 
-    const handleRemoveDoor = (id) => {
-        setDoors(prev => prev.filter(door => door.id !== id));
+    const handleRemoveWindow = (id) => {
+        setWindow(prev => prev.filter(window => window.id !== id));
     };
 
     const handleChange = (id, key, value) => {
-        setDoors(prev =>
-            prev.map(door =>
-                door.id === id ? { ...door, [key]: value } : door
+        setWindow(prev =>
+            prev.map(window =>
+                window.id === id ? { ...window, [key]: value } : window
             )
         );
     };
 
     const toggleAccordion = (id) => {
-        setDoors(prev =>
-            prev.map(door =>
-                door.id === id ? { ...door, isOpen: !door.isOpen } : door
+        setWindow(prev =>
+            prev.map(window =>
+                window.id === id ? { ...window, isOpen: !window.isOpen } : window
             )
         );
     };
+
 
     return (
         <div className="grid grid-cols-12 gap-4">
@@ -69,36 +69,36 @@ const Doors = () => {
                 <div className='flex flex-col flex-grow'>
                     <div className='flex justify-between items-center'>
                         <IconHeading className='lg:text-[16px] text-[12px]' primaryIcon={orderSpec} headingText="Order Specifications" secondaryIcon={infoCircleIcon} />
-                        <PrimaryBtn className='bg-transparent px-[0px] py-[0px]' iconLeft={addmoreIcon} onClick={handleAddDoor}>
-                            <span className='text-base-dark lg:text-[16px] text-[12px]'>Add Door</span>
+                        <PrimaryBtn className='bg-transparent px-[0px] py-[0px]' iconLeft={addmoreIcon} onClick={handleAddWindow}>
+                            <span className='text-base-dark lg:text-[16px] text-[12px]'>Add window</span>
                         </PrimaryBtn>
                     </div>
 
-                    {doors.map((door, index) => (
-                        <div key={door.id} className="border border-secondary rounded-large p-[15px] large mt-6">
+                    {window.map((window, index) => (
+                        <div key={window.id} className="border border-secondary rounded-large p-[15px] large mt-6">
                             {/* Header */}
                             <div className="flex justify-between items-center">
                                 <IconHeading
                                     primaryIcon={doorIcon}
-                                    headingText={`Door ${index + 1}`}
+                                    headingText={`window ${index + 1}`}
                                     secondaryIcon={infoCircleIcon}
                                 />
                                 <div className="flex gap-4 items-center">
-                                    <button onClick={() => handleRemoveDoor(door.id)}>
+                                    <button onClick={() => handleRemoveWindow(window.id)}>
                                         <Image img={deleteIcon} />
                                     </button>
                                     <VerticalSeparator className="h-10" />
                                     <PrimaryBtn
                                         className="bg-transparent px-2"
-                                        onClick={() => toggleAccordion(door.id)}
+                                        onClick={() => toggleAccordion(window.id)}
                                     >
-                                        <Image img={door.isOpen ? arrowUpIcon : arrowDownIcon} />
+                                        <Image img={window.isOpen ? arrowUpIcon : arrowDownIcon} />
                                     </PrimaryBtn>
                                 </div>
                             </div>
 
                             {/* Body */}
-                            {door.isOpen && (
+                            {window.isOpen && (
                                 <div className="mt-5">
                                     <form>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -106,45 +106,45 @@ const Doors = () => {
                                                 <Input
                                                     label="Height"
                                                     unit="sqf"
-                                                    value={door.height}
-                                                    onChange={(e) => handleChange(door.id, 'height', e.target.value)}
+                                                    value={window.height}
+                                                    onChange={(e) => handleChange(window.id, 'height', e.target.value)}
                                                 />
                                             </div>
                                             <div>
                                                 <Input
                                                     label="Width"
                                                     unit="sqf"
-                                                    value={door.width}
-                                                    onChange={(e) => handleChange(door.id, 'width', e.target.value)}
+                                                    value={window.width}
+                                                    onChange={(e) => handleChange(window.id, 'width', e.target.value)}
                                                 />
                                             </div>
                                             <div>
                                                 <Dropdown
                                                     label="Type"
-                                                    options={doorTypeOptions}
-                                                    value={door.type}
-                                                    onChange={(val) => handleChange(door.id, 'type', val)}
+                                                    options={windowTypeOptions}
+                                                    value={window.type}
+                                                    onChange={(val) => handleChange(window.id, 'type', val)}
                                                 />
                                             </div>
                                             <div>
                                                 <Dropdown
                                                     label="Frame Color"
                                                     options={colorOptions}
-                                                    value={door.frameColor}
-                                                    onChange={(val) => handleChange(door.id, 'frameColor', val)}
+                                                    value={window.frameColor}
+                                                    onChange={(val) => handleChange(window.id, 'frameColor', val)}
                                                 />
                                             </div>
                                             <div>
                                                 <Input
                                                     label="Tint Color"
-                                                    value={door.tintColor}
-                                                    onChange={(e) => handleChange(door.id, 'tintColor', e.target.value)}
+                                                    value={window.tintColor}
+                                                    onChange={(e) => handleChange(window.id, 'tintColor', e.target.value)}
                                                 />
                                             </div>
                                             <div>
                                                 <Counter
-                                                    value={door.qty}
-                                                    onChange={(val) => handleChange(door.id, 'qty', val)}
+                                                    value={window.qty}
+                                                    onChange={(val) => handleChange(window.id, 'qty', val)}
                                                     min={0}
                                                     max={100}
                                                 />
@@ -164,7 +164,7 @@ const Doors = () => {
 
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Doors;
+export default Window

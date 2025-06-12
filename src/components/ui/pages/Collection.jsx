@@ -1,6 +1,6 @@
 import React from 'react'
 import CollectionCard from '../CollectionCard'
-import { collectionImg, door, roof, solarPenels, installatioBanner, heater } from '../../../../imagesPath'
+import { collectionImg, door, roof, solarPenels, installatioBanner, heater, windowBanner, other } from '../../../../imagesPath'
 
 const Collection = () => {
 
@@ -8,9 +8,10 @@ const Collection = () => {
         { title: 'HVAC', slug: 'hvac', img: collectionImg },
         { title: 'SOLAR', slug: 'solar', img: solarPenels },
         { title: 'ROOF', slug: 'roof', img: roof },
+        { title: 'WINDOW', slug: 'window', img: windowBanner },
         { title: 'DOORS', slug: 'doors', img: door },
         { title: 'INSULATION', slug: 'insulation', img: installatioBanner },
-        { title: 'WATER HEATER', slug: 'water-heater', img: heater },
+        { title: 'OTHER', slug: 'others', img: other },
     ];
 
 

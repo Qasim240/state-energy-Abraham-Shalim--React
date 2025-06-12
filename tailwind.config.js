@@ -10,6 +10,7 @@ export default {
         primary: '#03276B',
         secondary: '#DEDEDE',
         'base': '#1E1E1E',
+        'base-50': 'rgba(30, 30, 30, 0.5)',
         'grey-light': "#B3B3B3",
         "base-red": '#C52F31',
         "base-red-200": '#C52F311A',

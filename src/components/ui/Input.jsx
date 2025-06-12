@@ -36,7 +36,7 @@ const Input = (
                     id={id}
                     ref={ref}
                     placeholder={placeholder}
-                    className={` resize-none ${validaionBorder(error)} ${className}`}
+                    className={` resize-none ${inputBorder} ${validaionBorder(error)} ${className}`}
                     {...props}
                 />
             ) : (

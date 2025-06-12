@@ -11,6 +11,7 @@ import IconHeading from '../../utils/IconHeading';
 import PrimaryBtn from '../PrimaryBtn';
 import AdderSelector from '../../utils/AdderSelector';
 import AddToCardWedget from '../../utils/AddToCardWedget';
+import CustomSlider from '../../utils/CustomSlider';
 
 const Roof = () => {
     const [selectedVariant, setSelectedVariant] = useState('Shingle');
@@ -18,6 +19,7 @@ const Roof = () => {
 
     const variants = ['Shingle', 'Flat', 'Metal', 'Tile'];
     const adders = ['Fascia', 'Rain Gutters'];
+    const sliderbanner = [detailBanner, detailBanner,detailBanner]
 
     const toggleAdder = (adder) =>
         setSelectedAdders((prev) =>
@@ -29,7 +31,7 @@ const Roof = () => {
     return (
         <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 md:col-span-4 hidden md:block">
-                <Image className="w-[100%]" img={detailBanner} />
+                <CustomSlider items={sliderbanner} />
             </div>
 
 

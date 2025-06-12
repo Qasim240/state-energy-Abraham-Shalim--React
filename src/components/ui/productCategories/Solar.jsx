@@ -6,6 +6,7 @@ import IconHeading from '../../utils/IconHeading';
 import Input from '../Input';
 import AdderSelector from '../../utils/AdderSelector';
 import AddToCardWedget from '../../utils/AddToCardWedget';
+import CustomSlider from '../../utils/CustomSlider';
 
 const Solar = () => {
 
@@ -17,7 +18,7 @@ const Solar = () => {
     }
 
     const adders = ['MPU', 'Panel Box Relocation', 'Sub-Panel', 'Stucco Repair'];
-
+    const sliderbanner = [solarBanner, solarBanner, solarBanner]
     const toggleAdder = (adder) =>
 
         setSelectedAdders((prev) =>
@@ -30,7 +31,7 @@ const Solar = () => {
     return (
         <div className="grid grid-cols-12 gap-4">
             <div className="col-span-12 md:col-span-4 hidden md:block">
-                <Image className="w-[100%]" img={solarBanner} />
+                <CustomSlider items={sliderbanner} />
             </div>
 
             <div className="col-span-12 md:col-span-8 flex flex-col min-h-full mt-4">
@@ -46,7 +47,7 @@ const Solar = () => {
                                         <div className='col-span-6'><Input label="Size of Panel" unit="w" /></div>
                                     </div>
                                     <div className="grid md:grid-cols-12 gap-4 mt-3">
-                                        <div className='col-span-12'><Input type="number" unit="KW" label="Amount of Panel" /></div>
+                                        <div className='col-span-12'><Input type="number" unit="KW" label="Total System KW" /></div>
                                     </div>
 
                                     <div>
