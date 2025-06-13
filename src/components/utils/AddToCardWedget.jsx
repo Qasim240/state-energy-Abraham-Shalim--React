@@ -2,6 +2,7 @@ import React from 'react'
 import { calcicon } from '../../../imagesPath'
 import PrimaryBtn from '../ui/PrimaryBtn'
 import Image from './Image'
+import { Link } from 'react-router-dom'
 
 const AddToCardWedget = ({ totalPrice, className = '', ...props }) => {
     return (
@@ -17,6 +18,7 @@ const AddToCardWedget = ({ totalPrice, className = '', ...props }) => {
             <div className='flex gap-2 items-center'>
                 <span className='font-Avenir font-extrabold text-[32px] flex items-baseline gap-2'>
                     <span className='font-Avenir font-medium text-gray-500 text-[20px]'>$</span>{totalPrice}</span>
+
                 <PrimaryBtn className='px-10'>
                     Add to Cart
                 </PrimaryBtn>

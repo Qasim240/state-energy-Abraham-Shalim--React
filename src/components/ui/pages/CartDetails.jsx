@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import PrimaryBtn from '../PrimaryBtn';
 import { fontMedium } from '../../utils/fontMedium';
 import CartCard from '../../utils/CartCard';
-import { roofSmallIcon, solarSmallIcon } from '../../../../imagesPath';
+import { downloadIcon, roofSmallIcon, solarSmallIcon } from '../../../../imagesPath';
 import PriceCard from '../PriceCard';
+import { Link } from 'react-router-dom';
 
 const CartDetails = () => {
     const [items, setItems] = useState([
@@ -53,7 +54,7 @@ const CartDetails = () => {
                     <div className='flex justify-between items-center'>
                         <div className='flex items-center gap-3'>
                             <span className={`text-[14px] text-base-50 ${fontMedium}`}>All Items</span>
-                            <span className='bg-base rounded-full h-[24px] w-[24px] flex justify-center items-center text-[12px] text-white font-Avenir font-extrabold'>
+                            <span className='bg-base rounded-full h-[24px] w-[24px] flex justify-center items-center text-[12px] bg-base-dark text-white font-Avenir font-extrabold'>
                                 {items.length}
                             </span>
                         </div>
@@ -69,7 +70,21 @@ const CartDetails = () => {
             </div>
             <div className="md:col-span-4 mt-6 md:mt-[55px]">
                 <div className="sticky botto-0">
+
                     <PriceCard />
+
+                    <Link to='/user-info'>
+                        <PrimaryBtn className='w-full mt-4 '>
+                            <span className='mx-auto'>Continue</span>
+                        </PrimaryBtn>
+                    </Link>
+                    <div className='flex items-center justify-center gap-4 mt-4'>
+
+                        <PrimaryBtn className='px-[0] py-[0] bg-transparent' iconLeft={downloadIcon}>
+                            <span className='text-base-dark underline font-Avenir font-medium'>Download this order</span>
+                        </PrimaryBtn>
+                        <span className={`bg-[#C52F311A] text-base-red py-[5px] px-[10px] rounded-[5px] text-[14px] ${fontMedium}`}>PDF</span>
+                    </div>
                 </div>
             </div>
         </div>

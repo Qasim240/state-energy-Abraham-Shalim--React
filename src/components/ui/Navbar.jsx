@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { logo, logoutIcon, orderIcon, profile, shoppingBag } from '../../../imagesPath'
 import VerticalSeparator from '../utils/VerticalSeparator'
+import Image from '../utils/Image'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
     const [openDropdown, setOpenDropdown] = useState(false)
@@ -32,9 +34,19 @@ const Navbar = () => {
                 </div>
 
                 <div className="flex items-center lg:gap-4 gap-2 relative" ref={dropdownRef}>
-                    <button>
-                        <img src={shoppingBag} alt="bag" className="w-5 h-5" />
-                    </button>
+
+                    <Link to="/cart-details">
+                        <span className='relative'>
+                            <p className='bg-base-red p-2 h-[24px] w-[24px] flex justify-center items-center rounded-full font-Avenir font-extrabold text-white absolute top-[9px] left-[-10px] text-[12px]'>
+                                1
+                            </p>
+
+
+                            <Image img={shoppingBag} className="w-5 h-5" />
+                        </span>
+
+                    </Link>
+
 
                     <button onClick={() => setOpenDropdown(!openDropdown)}
                         className="w-10 h-10 flex items-center justify-center rounded-full bg-blue-100 text-blue-900 font-semibold text-sm"
@@ -60,9 +72,12 @@ const Navbar = () => {
                             <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 font-Avenir font-medium">
                                 <img src={profile} alt="profile" /> Profile
                             </li>
-                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 font-Avenir font-medium">
-                                <img src={orderIcon} alt="order" /> My Orders
-                            </li>
+                            <Link to='/all-orders'>
+
+                                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 font-Avenir font-medium">
+                                    <img src={orderIcon} alt="order" /> My Orders
+                                </li>
+                            </Link>
                         </ul>
                         <hr />
                         {/* Logout */}

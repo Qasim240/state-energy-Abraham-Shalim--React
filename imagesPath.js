@@ -45,3 +45,7 @@ export { default as generalinfoIcon } from '/src/assets/images/generalinfoIcon.s
 export { default as supportIcon } from '/src/assets/images/supportIcon.svg'
 export { default as mosaicLogo } from '/src/assets/images/mosaicLogo.svg'
 export { default as reviewFinancial } from '/src/assets/images/reviewFinancial.svg'
+export { default as signature } from '/src/assets/images/signature.png'
+export { default as greenTick } from '/src/assets/images/greenTick.svg'
+export { default as redCrossIcon } from '/src/assets/images/redCrossIcon.svg'
+export { default as mosaicSmallLogo } from '/src/assets/images/mosaicSmallLogo.svg'

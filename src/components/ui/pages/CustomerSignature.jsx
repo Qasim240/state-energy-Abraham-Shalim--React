@@ -1,27 +1,14 @@
-import React, { useState } from 'react'
-import PrimaryBtn from '../PrimaryBtn'
+import React from 'react'
 import IconHeading from '../../utils/IconHeading'
-import { infoCircleIcon, supportIcon, mosaicLogo, reviewFinancial, downloadIcon } from '../../../../imagesPath'
 import PriceCard from '../PriceCard'
+import PrimaryBtn from '../PrimaryBtn'
+import { downloadIcon, infoCircleIcon, signature, supportIcon } from '../../../../imagesPath'
+import Image from '../../utils/Image'
+import Input from '../Input'
 import { fontMedium } from '../../utils/fontMedium'
 import { Link } from 'react-router-dom'
 
-const LoanFinance = () => {
-    const [selectedLoan, setSelectedLoan] = useState('1');
-
-    const loanOptions = [
-        {
-            id: '1',
-            img: mosaicLogo,
-            amount: 130.0,
-        },
-        {
-            id: '2',
-            img: reviewFinancial,
-            amount: 246.0,
-        },
-    ];
-
+const CustomerSignature = () => {
     return (
         <div className="grid md:grid-cols-12 grid-cols-1 lg:gap-5 h-screen md:overflow-hidden">
             <div className='md:col-span-8  pr-2'>
@@ -37,6 +24,12 @@ const LoanFinance = () => {
                             <li className="inline-flex items-center">
                                 <a href="#" className="font-medium font-Avenir text-sm text-base-50">
                                     Customer Information
+                                </a>
+                            </li>
+                            <li className="inline-flex items-center">
+
+                                <a href="#" className="font-medium font-Avenir text-sm text-base-50">
+                                    Loan Finance
                                 </a>
                             </li>
                             <li aria-current="page">
@@ -55,38 +48,41 @@ const LoanFinance = () => {
                 </div>
 
                 <hr className='my-4' />
-                <IconHeading className='lg:text-[16px] text-[12px] ' primaryIcon={supportIcon} headingText="Loan Finance" secondaryIcon={infoCircleIcon} />
+                <IconHeading className='lg:text-[16px] text-[12px] my-8' primaryIcon={supportIcon} headingText="Customer Signature" secondaryIcon={infoCircleIcon} />
+                <div className='border border-secondary p-4 rounded-large lg:mt-4 '>
 
-                <form className='mt-6'>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {loanOptions.map(option => (
-                            <div
-                                key={option.id}
-                                onClick={() => setSelectedLoan(option.id)}
-                                className={`border rounded-large p-5 cursor-pointer  text-center transition-all duration-200 ${selectedLoan === option.id ? 'border-primary shadow-md' : 'border-gray-300'
-                                    }`} >
+                    <Image className="mx-auto m-10" img={signature} />
 
-                                <div className='flex flex-col gap-3'>
-                                    <img className={`mx-auto ${selectedLoan !== option.id ? 'grayscale' : ''}`}
-                                        src={option.img}
-                                        alt="loan-logo"
-                                    />
-                                    <p className={`text-[14px] text-base-50 ${fontMedium} `}>New Monthly Payment</p>
-                                    <p className={`text-[24px] ${selectedLoan !== option.id ? 'text-base-50' : 'text-black'} font-Avenir font-extrabold `}>${option.amount.toFixed(2)}</p>
-                                </div>
-
-                            </div>
-                        ))}
+                    <div className='text-end'>
+                        <PrimaryBtn className='bg-transparent px-6 py-[7px] border  border-primary'>
+                            <span className='text-base text-primary'>Clear</span>
+                        </PrimaryBtn>
                     </div>
-                </form>
+                </div>
+
+                <div className='mt-4'>
+                    <input
+                        className='mr-2 h-[18px] w-[18px] accent-primary'
+                        id='terms'
+                        type="checkbox"
+                    />
+
+
+                    <label className={`text-base ${fontMedium}`} htmlFor="terms">I acknowledge that I have reviewed and agree to comply with the terms & conditions outlined in the purchase order.</label>
+                </div>
+
             </div>
 
             <div className="md:col-span-4 mt-6 md:mt-[40px]">
                 <PriceCard />
-                <Link to='/customer-signature'>
+
+
+                <Link to='/all-orders'>
                     <PrimaryBtn className='w-full mt-4 '>
                         <span className='mx-auto'>Continue</span>
-                    </PrimaryBtn></Link>
+                    </PrimaryBtn>
+                </Link>
+
                 <div className='flex items-center justify-center gap-4 mt-4'>
 
                     <PrimaryBtn className='px-[0] py-[0] bg-transparent' iconLeft={downloadIcon}>
@@ -94,9 +90,13 @@ const LoanFinance = () => {
                     </PrimaryBtn>
                     <span className={`bg-[#C52F311A] text-base-red py-[5px] px-[10px] rounded-[5px] text-[14px] ${fontMedium}`}>PDF</span>
                 </div>
+
+
+
+
             </div>
         </div>
     )
 }
 
-export default LoanFinance
+export default CustomerSignature

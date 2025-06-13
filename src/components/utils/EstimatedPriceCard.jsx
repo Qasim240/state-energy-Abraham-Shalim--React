@@ -5,10 +5,9 @@ import { fontMedium } from './fontMedium'
 import VerticalSeparator from './VerticalSeparator'
 import PrimaryBtn from '../ui/PrimaryBtn'
 import { Link } from 'react-router-dom'
+import DividerCard from './DividerCard'
 
 const EstimatedPriceCard = () => {
-    const monthalyBillStyle = `${fontMedium} text-[14px] text-base-50 mb-3`
-    const monthalyInsuranceStyle = `font-Avenir font-medium text-[20px]`
     return (
         <>
 
@@ -21,17 +20,7 @@ const EstimatedPriceCard = () => {
                     <hr />
                 </div>
 
-                <div className='flex gap-5 justify-center items-center'>
-                    <div>
-                        <p className={monthalyBillStyle}>Monthly Utility Bill</p>
-                        <p className={monthalyInsuranceStyle}><span>$</span>$123.45</p>
-                    </div>
-                    <VerticalSeparator className='h-[44px]' />
-                    <div>
-                        <p className={monthalyBillStyle}>Monthly Insurance Bill</p>
-                        <p className={monthalyInsuranceStyle}>$<span></span>123.45</p>
-                    </div>
-                </div>
+                <DividerCard firstHeading="Monthly Utility Bill" firstInfo="123.45" secondheading="Monthly Insurance Bill" seondinfo="123.45" />
 
             </div>
 
@@ -65,22 +54,11 @@ const EstimatedPriceCard = () => {
                     <span className='text-[18px] font-Avenir font-extrabold'>Total Price</span>
                     <p className='text-[24px] font-Avenir font-extrabold text-primary'><span className='text-[14px] text-base'>$</span>70.00</p>
                 </div>
-
-
             </div>
+           
 
+           
 
-            <Link to='/user-info'>
-                <PrimaryBtn className='w-full mt-4 '>
-                    <span className='mx-auto'>Continue</span>
-                </PrimaryBtn></Link>
-            <div className='flex items-center justify-center gap-4 mt-4'>
-
-                <PrimaryBtn className='px-[0] py-[0] bg-transparent' iconLeft={downloadIcon}>
-                    <span className='text-base underline font-Avenir font-medium'> Download this order</span>
-                </PrimaryBtn>
-                <span className={`bg-[#C52F311A] text-base-red py-[5px] px-[10px] rounded-[5px] text-[14px] ${fontMedium}`}>PDF</span>
-            </div>
 
 
 

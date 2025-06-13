@@ -27,7 +27,7 @@ const Home = () => {
 
             <div className='text-center mt-[48px]'>
                 <Link to="/collection">
-                    <PrimaryBtn className='py-4' icon={arrowRight}>
+                    <PrimaryBtn className='py-4 px-5' icon={arrowRight}>
                         Proceed with Order
                     </PrimaryBtn>
                 </Link>

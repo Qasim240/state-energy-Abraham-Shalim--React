@@ -40,7 +40,7 @@ const fieldMap = {
   ],
 };
 
-function CartCard({ item, onDelete }) {
+function CartCard({ item, onDelete, showEdit = true, showDelete = true }) {
   const fields = fieldMap[item.title] || [];
 
   return (
@@ -53,12 +53,22 @@ function CartCard({ item, onDelete }) {
         </div>
 
         <div className="flex items-center gap-4">
-          <p className={`${fontMedium} text-[14px]`}>
-            ${(item.price ?? 0).toFixed(2)}
+          <p className={`${fontMedium} text-[20px] font-extrabold`}>
+            <span className='text-[14px] text-base-50 mr-1'>$</span>{(item.price ?? 0).toFixed(2)}
           </p>
-          <VerticalSeparator />
-          <PrimaryBtn className="px-[0] bg-transparent" iconLeft={editicon} />
-          <PrimaryBtn onClick={onDelete} className="px-[0]  bg-transparent" iconLeft={deleteIcon} />
+
+          {(showEdit || showDelete) && <VerticalSeparator />}
+
+          {showEdit && (
+            <PrimaryBtn className="px-[0] bg-transparent" iconLeft={editicon} />
+          )}
+          {showDelete && (
+            <PrimaryBtn
+              onClick={onDelete}
+              className="px-[0] bg-transparent"
+              iconLeft={deleteIcon}
+            />
+          )}
         </div>
       </div>
 

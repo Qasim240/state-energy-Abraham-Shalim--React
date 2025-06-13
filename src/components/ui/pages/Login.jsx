@@ -10,6 +10,7 @@ import PrimaryHeading from '../PrimaryHeading';
 import { emialPasswordSchema } from '../../utils/loginSchema';
 
 import { validaionBorder } from '../../utils/ValidationBorder';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
 
@@ -59,7 +60,7 @@ const Login = () => {
 
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-x-2">
-                            
+
                             <input
                                 className="w-4 h-4 text-primary accent-primary"
                                 id="StaySigned"
@@ -69,7 +70,9 @@ const Login = () => {
                                 Stay Signed In
                             </label>
                         </div>
-                        <PrimaryBtn type="submit">Login</PrimaryBtn>
+                        <Link to="/home">
+                            <PrimaryBtn type="submit">Login</PrimaryBtn>
+                        </Link>
                     </div>
                 </form>
             </div>
