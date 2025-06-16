@@ -1,38 +1,57 @@
-import './App.css'
-import MainLayout from './components/MainLayout'
-import Collection from './components/ui/pages/Collection'
-import DetailPage from './components/ui/pages/DetailPage'
-import Home from './components/ui/pages/Home'
-import Login from './components/ui/pages/Login'
-import { Routes, Route } from 'react-router-dom'
-import CartDetails from './components/ui/pages/CartDetails'
-import AddUSerInfo from './components/ui/pages/AddUSerInfo'
-import LoanFinance from './components/ui/pages/LoanFinance'
-import CustomerSignature from './components/ui/pages/CustomerSignature'
-import AllOrder from './components/ui/pages/AllOrder'
-import SingleInvoice from './components/ui/pages/SingleInvoice'
+import './App.css';
+import { Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+
+import MainLayout from './components/MainLayout';
+import Collection from './components/ui/pages/Collection';
+import DetailPage from './components/ui/pages/DetailPage';
+import Home from './components/ui/pages/Home';
+import Login from './components/ui/pages/Login';
+import CartDetails from './components/ui/pages/CartDetails';
+import AddUSerInfo from './components/ui/pages/AddUSerInfo';
+import LoanFinance from './components/ui/pages/LoanFinance';
+import CustomerSignature from './components/ui/pages/CustomerSignature';
+import AllOrder from './components/ui/pages/AllOrder';
+import SingleInvoice from './components/ui/pages/SingleInvoice';
+import ProtectedRoutes from './components/utils/ProtectedRoutes';
 
 function App() {
-
   return (
     <>
       <Routes>
+        {/* Public Route */}
         <Route path="/" element={<Login />} />
-        <Route path="/home" element={<MainLayout ><Home /></MainLayout>} />
-        <Route path="/collection" element={<MainLayout ><Collection /></MainLayout>} />
-        <Route path="/cart-details" element={<MainLayout ><CartDetails /></MainLayout>} />
-        <Route path="/user-info" element={<MainLayout ><AddUSerInfo /></MainLayout>} />
-        <Route path="/loan-finance" element={<MainLayout ><LoanFinance /></MainLayout>} />
-        <Route path="/customer-signature" element={<MainLayout ><CustomerSignature /></MainLayout>} />
-        <Route path="/all-orders" element={<MainLayout ><AllOrder /></MainLayout>} />
-        <Route path="/single-invoice" element={<MainLayout ><SingleInvoice /></MainLayout>} />
-        <Route
-          path="/collection/:category"
-          element={<MainLayout><DetailPage /></MainLayout>}
-        />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoutes />}>
+
+          <Route element={<MainLayout />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/collection" element={<Collection />} />
+            <Route path="/cart-details" element={<CartDetails />} />
+            <Route path="/user-info" element={<AddUSerInfo />} />
+            <Route path="/loan-finance" element={<LoanFinance />} />
+            <Route path="/customer-signature" element={<CustomerSignature />} />
+            <Route path="/all-orders" element={<AllOrder />} />
+            <Route path="/single-invoice" element={<SingleInvoice />} />
+            <Route path="/collection/:category" element={<DetailPage />} />
+          </Route>
+        </Route>
       </Routes>
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        draggable
+        
+        theme="light"
+      />
     </>
-  )
+  );
 }
 
-export default App
+export default App;

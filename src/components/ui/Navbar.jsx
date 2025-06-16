@@ -3,10 +3,16 @@ import { logo, logoutIcon, orderIcon, profile, shoppingBag } from '../../../imag
 import VerticalSeparator from '../utils/VerticalSeparator'
 import Image from '../utils/Image'
 import { Link } from 'react-router-dom'
-
+import { useDispatch, useSelector } from 'react-redux';
+import { clearUser } from '../../features/slices/userSlice.js'
 const Navbar = () => {
     const [openDropdown, setOpenDropdown] = useState(false)
     const dropdownRef = useRef()
+    const user = useSelector((state) => state.user.user);
+    const lastName = useSelector((state) => state.user.lastName);
+    const dispatch = useDispatch();
+
+
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -17,6 +23,13 @@ const Navbar = () => {
         document.addEventListener('mousedown', handleClickOutside)
         return () => document.removeEventListener('mousedown', handleClickOutside)
     }, [])
+
+
+
+    const userLogoutHanlder = () => {
+        dispatch(clearUser());
+        navigate('/');
+    }
 
     return (
         <nav className="container lg:py-10 md:pt-5 md:pb-4 py-3">
@@ -29,7 +42,7 @@ const Navbar = () => {
                     <VerticalSeparator height="h-7" color="bg-grey-light" className="mx-2" />
 
                     <span className="text-gray-700 font-Avenir font-normal lg:text-[20px] text-[14px]">
-                        Welcome, <span className="font-medium">Ben!</span>
+                        Welcome, <span className="font-medium">{user?.name}!</span>
                     </span>
                 </div>
 
@@ -63,7 +76,11 @@ const Navbar = () => {
                     >
                         {/* User Info */}
                         <div className="px-4 py-3">
-                            <p className="text-[20px] font-Avenir font-medium text-blue-900 mb-1">Eytan Ohayon</p>
+                            <p className="text-[20px] font-Avenir font-medium text-blue-900 mb-1">
+
+                                <p>{user?.name} {user?.lastName}</p>
+
+                            </p>
                             <p className="text-xs text-gray-500 font-Avenir font-medium">Sales Representative</p>
                         </div>
                         <hr />
@@ -81,7 +98,7 @@ const Navbar = () => {
                         </ul>
                         <hr />
                         {/* Logout */}
-                        <div className="px-4 py-2 hover:bg-red-50 cursor-pointer text-red-600 text-sm font-Avenir font-medium flex items-center gap-2">
+                        <div className="px-4 py-2 hover:bg-red-50 cursor-pointer text-red-600 text-sm font-Avenir font-medium flex items-center gap-2" onClick={userLogoutHanlder}>
                             <img src={logoutIcon} alt="logout" /> Logout
                         </div>
 

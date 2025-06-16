@@ -1,12 +1,13 @@
 import React from 'react'
 import Navbar from './ui/Navbar'
+import { Outlet } from 'react-router-dom'
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
     return (
         <>
             <Navbar />
             <main className="container" >
-                {children}
+                <Outlet />
             </main>
         </>
     )
