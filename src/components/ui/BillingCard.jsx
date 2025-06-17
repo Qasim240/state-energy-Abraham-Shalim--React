@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import VerticalSeparator from '../utils/VerticalSeparator';
+import { setUtilityBill, setInsuranceBill } from '../../features/slices/userSlice.js';
+import { useDispatch, useSelector } from 'react-redux';
 
-const BillingCard = ({ title, icon, initialAmount = 2000, maxAmount = 10000 }) => {
-    const [amount, setAmount] = useState(2000);
+const BillingCard = ({ title, icon, type = 'utility', maxAmount = 10000 }) => {
+    const dispatch = useDispatch();
 
+    const amount = useSelector((state) =>
+        type === 'utility' ? state.user.utilityBill : state.user.insuranceBill
+    );
 
-    const handleSliderChange = (e) => {
-        setAmount(Number(e.target.value));
+    const handleAmountChange = (value) => {
+        const parsed = Number(value);
+        if (!isNaN(parsed) && parsed >= 0 && parsed <= maxAmount) {
+            dispatch(type === 'utility' ? setUtilityBill(parsed) : setInsuranceBill(parsed));
+        }
     };
 
     const fillPercent = (amount / maxAmount) * 100;
@@ -18,13 +26,18 @@ const BillingCard = ({ title, icon, initialAmount = 2000, maxAmount = 10000 }) =
                 <span className="font-medium font-Avenir text-gray-700">{title}</span>
             </div>
 
-
             <div className="flex items-center border border-gray-300 p-4 my-4 bg-white rounded-large">
                 <span className="text-gray-400 text-[40px] font-medium font-Avenir">$</span>
                 <VerticalSeparator className="mx-4 h-8 w-[2px]" />
-                <span className="text-blue-900  text-2xl font-medium font-Avenir text-[40px]">{amount}</span>
+                <input
+                    type="number"
+                    min="0"
+                    max={maxAmount}
+                    value={amount}
+                    onChange={(e) => handleAmountChange(e.target.value)}
+                    className="text-blue-900 text-2xl font-medium font-Avenir text-[40px] w-full bg-transparent focus:outline-none"
+                />
             </div>
-
 
             <div className="relative">
                 <input
@@ -32,48 +45,46 @@ const BillingCard = ({ title, icon, initialAmount = 2000, maxAmount = 10000 }) =
                     min="0"
                     max={maxAmount}
                     value={amount}
-                    onChange={handleSliderChange}
+                    onChange={(e) => handleAmountChange(e.target.value)}
                     className="w-full h-2 rounded-large appearance-none cursor-pointer bg-base-50"
                     style={{
                         background: `linear-gradient(to right, #C52F31 0%, #C52F31 ${fillPercent}%, #E5E7EB ${fillPercent}%, #E5E7EB 100%)`
                     }}
                 />
 
-
                 <div className="flex justify-between text-sm text-gray-500 mt-3">
                     <span className='text-base-dark font-extrabold font-Avenir'>$0</span>
                     <span className='text-base-dark font-extrabold font-Avenir'>$10K</span>
                 </div>
 
-
                 <style jsx>{`
-          input[type='range']::-webkit-slider-thumb {
-            appearance: none;
-            width: 48px;
-            height: 32px;
-            background-color: #C52F31;
-            background-image: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2010%2012'%20fill='none'%20width='10'%20height='12'><path%20d='M1%201L1%2011'%20stroke='%23FBFBFB'%20stroke-width='1.75'%20stroke-linecap='round'/><path%20d='M9%201L9%2011'%20stroke='%23FBFBFB'%20stroke-width='1.75'%20stroke-linecap='round'/></svg>");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 10px 12px;
-            border-radius: 16px;
-            border: none;
-            cursor: pointer;
-            margin-top: 0px;
-          }
-          input[type='range']::-moz-range-thumb {
-            width: 28px;
-            height: 28px;
-            background-color: #C52F31;
-            background-image: url("data:image/svg+xml;utf8,<svg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2010%2012'%20fill='none'%20width='10'%20height='12'><path%20d='M1%201L1%2011'%20stroke='%23FBFBFB'%20stroke-width='1.75'%20stroke-linecap='round'/><path%20d='M9%201L9%2011'%20stroke='%23FBFBFB'%20stroke-width='1.75'%20stroke-linecap='round'/></svg>");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 10px 12px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-          }
-        `}</style>
+                    input[type='range']::-webkit-slider-thumb {
+                        appearance: none;
+                        width: 48px;
+                        height: 32px;
+                        background-color: #C52F31;
+                        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12' fill='none' width='10' height='12'><path d='M1 1L1 11' stroke='%23FBFBFB' stroke-width='1.75' stroke-linecap='round'/><path d='M9 1L9 11' stroke='%23FBFBFB' stroke-width='1.75' stroke-linecap='round'/></svg>");
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 10px 12px;
+                        border-radius: 16px;
+                        border: none;
+                        cursor: pointer;
+                        margin-top: 0px;
+                    }
+                    input[type='range']::-moz-range-thumb {
+                        width: 28px;
+                        height: 28px;
+                        background-color: #C52F31;
+                        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 12' fill='none' width='10' height='12'><path d='M1 1L1 11' stroke='%23FBFBFB' stroke-width='1.75' stroke-linecap='round'/><path d='M9 1L9 11' stroke='%23FBFBFB' stroke-width='1.75' stroke-linecap='round'/></svg>");
+                        background-repeat: no-repeat;
+                        background-position: center;
+                        background-size: 10px 12px;
+                        border-radius: 50%;
+                        border: none;
+                        cursor: pointer;
+                    }
+                `}</style>
             </div>
         </div>
     );

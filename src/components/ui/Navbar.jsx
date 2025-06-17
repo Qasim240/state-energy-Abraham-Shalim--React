@@ -9,10 +9,9 @@ const Navbar = () => {
     const [openDropdown, setOpenDropdown] = useState(false)
     const dropdownRef = useRef()
     const user = useSelector((state) => state.user.user);
-    const lastName = useSelector((state) => state.user.lastName);
     const dispatch = useDispatch();
 
-
+    // const user = useSelector((state) => state.user.user);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -42,7 +41,7 @@ const Navbar = () => {
                     <VerticalSeparator height="h-7" color="bg-grey-light" className="mx-2" />
 
                     <span className="text-gray-700 font-Avenir font-normal lg:text-[20px] text-[14px]">
-                        Welcome, <span className="font-medium">{user?.name}!</span>
+                        Welcome, <span className="font-medium">{user?.first_name}!</span>
                     </span>
                 </div>
 
@@ -67,28 +66,31 @@ const Navbar = () => {
                         EO
                     </button>
 
-                    {/* Dropdown */}
+
                     <div
                         className={`absolute top-[120%] rounded-large right-0 mt-2 w-64 bg-white border border-gray-200 shadow-xl large p-3 z-50 overflow-hidden transition-all duration-100 transform ${openDropdown
                             ? 'opacity-100 scale-100 visible'
                             : 'opacity-0 scale-95 invisible pointer-events-none'
                             }`}
                     >
-                        {/* User Info */}
+
                         <div className="px-4 py-3">
                             <p className="text-[20px] font-Avenir font-medium text-blue-900 mb-1">
 
-                                <p>{user?.name} {user?.lastName}</p>
+                                <p>{user?.full_name}</p>
 
                             </p>
                             <p className="text-xs text-gray-500 font-Avenir font-medium">Sales Representative</p>
                         </div>
                         <hr />
-                        {/* Menu Options */}
+
                         <ul className="py-2 text-[16px] text-gray-700">
-                            <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 font-Avenir font-medium">
-                                <img src={profile} alt="profile" /> Profile
-                            </li>
+                            <Link to='/profile'>
+                                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 font-Avenir font-medium">
+                                    <img src={profile} alt="profile" /> Profile
+                                </li>
+                            </Link>
+
                             <Link to='/all-orders'>
 
                                 <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2 font-Avenir font-medium">
@@ -97,7 +99,7 @@ const Navbar = () => {
                             </Link>
                         </ul>
                         <hr />
-                        {/* Logout */}
+
                         <div className="px-4 py-2 hover:bg-red-50 cursor-pointer text-red-600 text-sm font-Avenir font-medium flex items-center gap-2" onClick={userLogoutHanlder}>
                             <img src={logoutIcon} alt="logout" /> Logout
                         </div>

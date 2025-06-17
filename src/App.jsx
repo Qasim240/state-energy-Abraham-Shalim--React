@@ -14,6 +14,8 @@ import CustomerSignature from './components/ui/pages/CustomerSignature';
 import AllOrder from './components/ui/pages/AllOrder';
 import SingleInvoice from './components/ui/pages/SingleInvoice';
 import ProtectedRoutes from './components/utils/ProtectedRoutes';
+import SelectAppointement from './components/ui/pages/SelectAppointement';
+import Userprofile from './components/ui/pages/Userprofile';
 
 function App() {
   return (
@@ -26,6 +28,8 @@ function App() {
         <Route element={<ProtectedRoutes />}>
 
           <Route element={<MainLayout />}>
+            <Route path="/profile" element={<Userprofile />} />
+            <Route path="/select-appointment" element={<SelectAppointement />} />
             <Route path="/home" element={<Home />} />
             <Route path="/collection" element={<Collection />} />
             <Route path="/cart-details" element={<CartDetails />} />
@@ -47,7 +51,7 @@ function App() {
         closeOnClick={false}
         rtl={false}
         draggable
-        
+
         theme="light"
       />
     </>

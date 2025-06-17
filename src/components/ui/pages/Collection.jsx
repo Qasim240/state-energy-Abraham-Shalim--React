@@ -1,29 +1,39 @@
-import React from 'react'
-import CollectionCard from '../CollectionCard'
-import { collectionImg, door, roof, solarPenels, installatioBanner, heater, windowBanner, other } from '../../../../imagesPath'
+import React from 'react';
+import CollectionCard from '../CollectionCard';
+import CollectionCardSkeleton from '../../utils/CollectionCardSkeleton';
+import { useGetCategoriesQuery } from '../../../features/api/apiSlice';
 
 const Collection = () => {
+    const { data, isLoading, isError } = useGetCategoriesQuery();
 
-    const collections = [
-        { title: 'HVAC', slug: 'hvac', img: collectionImg },
-        { title: 'SOLAR', slug: 'solar', img: solarPenels },
-        { title: 'ROOF', slug: 'roof', img: roof },
-        { title: 'WINDOW', slug: 'window', img: windowBanner },
-        { title: 'DOORS', slug: 'doors', img: door },
-        { title: 'INSULATION', slug: 'insulation', img: installatioBanner },
-        { title: 'OTHER', slug: 'others', img: other },
-    ];
+    if (isLoading) {
+        return (
+            <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
+                {Array.from({ length: 8 }).map((_, idx) => (
+                    <CollectionCardSkeleton key={idx} />
+                ))}
+            </div>
+        );
+    }
 
+    if (isError) {
+        return <p className="text-center py-10 text-red-500">Failed to load categories</p>;
+    }
+
+    const categories = data?.data?.categories || [];
 
     return (
-
         <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
-            {collections.map(({ title, slug, img }) => (
-                <CollectionCard key={slug} title={title} slug={slug} thumbnailImg={img} />
+            {categories.map((category) => (
+                <CollectionCard
+                    key={category.id}
+                    title={category.name}
+                    slug={category.name.toLowerCase()}
+                    thumbnailImg={category.thumbnail_url}
+                />
             ))}
         </div>
+    );
+};
 
-    )
-}
-
-export default Collection
+export default Collection;

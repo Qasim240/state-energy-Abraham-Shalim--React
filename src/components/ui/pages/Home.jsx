@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PrimaryHeading from '../PrimaryHeading'
 import BillingCard from '../BillingCard'
 import { arrowRight, monthlyBillIcon } from '../../../../imagesPath'
 import PrimaryBtn from '../PrimaryBtn'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 const Home = () => {
+    const selectedAppointment = useSelector((state) => state.user.selectedAppointment);
+    console.log("selectedAppointment", selectedAppointment)
+
+    useEffect(() => {
+        console.log('Selected Appointment:', selectedAppointment);
+    }, [selectedAppointment]);
 
     return (
         <>
@@ -18,17 +25,27 @@ const Home = () => {
             </div>
             <div className="grid lg:grid-cols-12 gap-4">
                 <div className="lg:col-start-2 lg:col-span-5">
-                    <BillingCard title="Monthly Utility Bill" icon={monthlyBillIcon} />
+                    <BillingCard
+                        title="Monthly Utility Bill"
+                        icon={monthlyBillIcon}
+                        type="utility"
+                        maxAmount={10000}
+                    />
                 </div>
                 <div className="lg:col-span-5">
-                    <BillingCard title="Monthly Insurance Bill" icon={monthlyBillIcon} />
+                    <BillingCard
+                        title="Monthly Insurance Bill"
+                        icon={monthlyBillIcon}
+                        type="insurance"
+                        maxAmount={10000}
+                    />
                 </div>
             </div>
 
             <div className='text-center mt-[48px]'>
                 <Link to="/collection">
-                    <PrimaryBtn 
-                    Name='py-4 px-5' icon={arrowRight}>
+                    <PrimaryBtn
+                        Name='py-4 px-5' icon={arrowRight}>
                         Proceed with Order
                     </PrimaryBtn>
                 </Link>

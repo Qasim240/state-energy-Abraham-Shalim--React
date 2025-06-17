@@ -8,7 +8,7 @@ import PrimaryHeading from '../PrimaryHeading';
 import { emialPasswordSchema } from '../../utils/loginSchema';
 import { validaionBorder } from '../../utils/ValidationBorder';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLoginMutation } from '../../../features/api/authApiSlice';
+import { useLoginMutation } from '../../../features/api/apiSlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../../features/slices/userSlice.js';
 import { toast } from 'react-toastify';
@@ -29,14 +29,12 @@ const Login = () => {
             const userData = response.data;
 
             dispatch(setUser({
-                id: userData.user.id,
-                name: userData.user.first_name,
-                lastName: userData.user.last_name,
-                email: userData.user.email,
                 token: userData.token,
+                user: userData.user,
             }));
+
             toast.success('Login successful');
-            navigate('/home');
+            navigate('/select-appointment');
 
         } catch (err) {
             console.error('Login failed:', err);
@@ -51,12 +49,9 @@ const Login = () => {
 
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/home');
+            navigate('/select-appointment');
         }
     }, [isLoggedIn, navigate]);
-
-
-
 
 
     return (
