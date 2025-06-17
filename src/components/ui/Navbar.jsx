@@ -50,7 +50,7 @@ const Navbar = () => {
                     <Link to="/cart-details">
                         <span className='relative'>
                             <p className='bg-base-red p-2 h-[24px] w-[24px] flex justify-center items-center rounded-full font-Avenir font-extrabold text-white absolute top-[9px] left-[-10px] text-[12px]'>
-                                1
+                                0
                             </p>
 
 
