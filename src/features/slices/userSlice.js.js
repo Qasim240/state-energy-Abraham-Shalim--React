@@ -8,6 +8,26 @@ const initialState = {
     selectedRange: 50,
     utilityBill: 2000,
     insuranceBill: 2000,
+    categories: [],
+    cart: [],
+    cartCount: 0,
+
+
+    roofSelection: {
+        variant: '',
+        squareFootage: '',
+        color: '',
+        adders: []
+    },
+    solarSelection: {
+        panelAmount: '',
+        panelSize: '',
+        totalKW: '',
+        includeBattery: false,
+        batteryCapacity: '',
+        inverterCapacity: '',
+        adders: []
+    },
 };
 
 const userSlice = createSlice({
@@ -16,19 +36,33 @@ const userSlice = createSlice({
     reducers: {
         setUser: (state, action) => {
             const { token, user } = action.payload;
-
             state.user = {
                 token,
                 ...user,
                 full_name: `${user.first_name} ${user.last_name}`,
             };
-
             state.isLoggedIn = true;
         },
         clearUser: (state) => {
             state.user = null;
             state.isLoggedIn = false;
             state.selectedAppointment = null;
+            state.categories = [];
+            state.roofSelection = {
+                variant: '',
+                squareFootage: '',
+                color: '',
+                adders: []
+            };
+            state.solarSelection = {
+                panelAmount: '',
+                panelSize: '',
+                totalKW: '',
+                includeBattery: false,
+                batteryCapacity: '',
+                inverterCapacity: '',
+                adders: []
+            };
         },
         setSelectedAppointment: (state, action) => {
             state.selectedAppointment = action.payload;
@@ -39,15 +73,47 @@ const userSlice = createSlice({
         setInsuranceBill: (state, action) => {
             state.insuranceBill = action.payload;
         },
+        setCategories: (state, action) => {
+            state.categories = action.payload;
+        },
+        setRoofSelection: (state, action) => {
+            state.roofSelection = action.payload;
+        },
+        setSolarSelection: (state, action) => {
+            state.solarSelection = action.payload;
+        },
+        addToCart: (state, action) => {
+            if (!Array.isArray(state.cart)) {
+                state.cart = [];
+                state.cartCount = 0;
+            }
+            state.cart.push(action.payload);
+            state.cartCount = state.cart.length;
+        },
+        removeCartItem: (state, action) => {
+            state.cart = state.cart.filter(item => item.id !== action.payload);
+            state.cartCount = state.cart.length;
+        },
+        clearCart: (state) => {
+            state.cart = [];
+            state.cartCount = 0;
+        }
     },
 });
+
 
 export const {
     setUser,
     clearUser,
     setSelectedAppointment,
     setUtilityBill,
-    setInsuranceBill
+    setInsuranceBill,
+    setCategories,
+    setRoofSelection,
+    setSolarSelection,
+    addToCart,
+    removeCartItem,
+    clearCart,
 } = userSlice.actions;
 
 export default userSlice.reducer;

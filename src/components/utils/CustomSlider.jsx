@@ -1,4 +1,3 @@
-
 import React from 'react';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -6,7 +5,7 @@ import Slider from 'react-slick';
 import Image from './Image';
 import '../../sliderDots.css';
 
-const CustomSlider = ({ items }) => {
+const CustomSlider = ({ items = [] }) => {
     const settings = {
         dots: true,
         infinite: true,
@@ -22,7 +21,7 @@ const CustomSlider = ({ items }) => {
         <div className='sticky top-0'>
             <div className="slider-container relative">
                 <Slider {...settings}>
-                    {items.map((item, index) => (
+                    {items.filter(Boolean).map((item, index) => (
                         <div key={index}>
                             <Image className="w-full" img={item} />
                         </div>

@@ -5,6 +5,8 @@ import { useGetAppointmentsQuery } from '../../../features/api/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { setSelectedAppointment } from '../../../features/slices/userSlice.js';
+import PrimaryBtn from '../PrimaryBtn.jsx';
+import LongBarSkeltion from '../../utils/longBarSkeltion.jsx';
 
 const SelectAppointment = () => {
     const { data, isLoading, isError } = useGetAppointmentsQuery();
@@ -19,8 +21,8 @@ const SelectAppointment = () => {
 
 
     const handleSelect = (e) => {
-        const selectedId = e.target.value;
-        setSelectedId(selectedId);
+        const selectedItemId = e.target.value;
+        setSelectedId(() => selectedItemId);
         const selected = appointments.find((a) => a.id === selectedId);
         dispatch(setSelectedAppointment(selected));
     };
@@ -45,20 +47,18 @@ const SelectAppointment = () => {
                     <h1 className="font-Avenir font-bold text-[28px] text-blue-900 mb-1">
                         Select your Appointment
                     </h1>
-                    <p className="text-gray-400 font-Avenir font-normal">
-                        Please select an Appointment.
-                    </p>
+
 
                     <div className="w-full">
                         <label
                             htmlFor="appointment"
-                            className="block mb-3 font-Avenir font-medium text-gray-700 text-[16px]"
-                        >
-                            Appointment Location
+                            className="block mb-3 font-Avenir font-medium text-gray-700 text-[16px]">
+                            Please select an Appointment.
                         </label>
 
                         {isLoading ? (
-                            <p className="text-gray-500">Loading appointments...</p>
+                            // <p className="text-gray-500">Loading appointments...</p>
+                            <LongBarSkeltion />
                         ) : isError ? (
                             <p className="text-red-500">Failed to load appointments</p>
                         ) : (
@@ -82,13 +82,14 @@ const SelectAppointment = () => {
                     </div>
 
                     <div>
-                        <button
+                        <PrimaryBtn
+                            className='w-full bg-primary'
                             onClick={handleProceed}
                             disabled={!selectedId}
-                            className="mt-5 w-full bg-blue-600 text-white font-semibold px-5 py-3 rounded-md hover:bg-blue-700 transition"
                         >
-                            Continue
-                        </button>
+                            <span className='mx-auto'>Select Appointement</span>
+
+                        </PrimaryBtn>
                     </div>
                 </div>
             </div>

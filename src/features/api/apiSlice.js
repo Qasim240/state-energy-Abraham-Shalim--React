@@ -6,7 +6,8 @@ export const apiSlice = createApi({
 
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://192.168.100.131/state-energy/public/api/v1',
+        // baseUrl: 'http://192.168.100.131/state-energy/public/api/v1',
+        baseUrl: 'http://localhost:3000',
 
         prepareHeaders: (headers, { getState }) => {
 
@@ -49,7 +50,8 @@ export const apiSlice = createApi({
         }),
         getCategories: builder.query({
             query: (body) => ({
-                url: '/categories',
+                // url: '/categories',
+                url: '/data',
                 method: 'GET',
                 body,
             }),

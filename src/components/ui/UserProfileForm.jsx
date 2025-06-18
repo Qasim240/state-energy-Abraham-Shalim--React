@@ -55,7 +55,7 @@ const UserProfileForm = () => {
                 {...register('phone')}
             />
 
-            <div className="grid lg:grid-cols-2 grid-cols-1 gap-5">
+            <div className="grid lg:grid-cols-2 grid-cols-1 gap-10">
                 <Input
                     label="City"
                     placeholder="City"

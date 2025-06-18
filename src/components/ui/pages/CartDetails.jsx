@@ -5,35 +5,22 @@ import CartCard from '../../utils/CartCard';
 import { downloadIcon, roofSmallIcon, solarSmallIcon } from '../../../../imagesPath';
 import PriceCard from '../PriceCard';
 import { Link } from 'react-router-dom';
+import BackBtn from '../../utils/BackBtn'
+import { clearCart, removeCartItem } from '../../../features/slices/userSlice.js';
+import { useDispatch, useSelector } from 'react-redux';
 
 const CartDetails = () => {
-    const [items, setItems] = useState([
-        {
-            id: '001234124',
-            title: 'Roof',
-            type: 'Shingle',
-            sqft: '2000 sqf',
-            color: { name: 'Red', code: '#C52F31' },
-            adders: 'Fascia',
-            price: 200,
-            icon: roofSmallIcon,
-        },
-        {
-            id: '001234125',
-            title: 'Solar',
-            Panl: "5",
-            systemKW: '6.5 KW',
-            battery: 'Tesla Powerwall',
-            adders: 'Smart Meter, EV Charger',
-            price: 25000,
-            icon: solarSmallIcon,
-        },
-    ]);
+
+
+    const dispatch = useDispatch();
+    const items = useSelector((state) => state.user.cart);
+
 
     const handleDelete = (id) => {
         const confirmDelete = window.confirm('Are you sure you want to delete this item?');
         if (confirmDelete) {
-            setItems(prev => prev.filter(item => item.id !== id));
+            dispatch(removeCartItem(id));
+
         }
     };
 
@@ -41,7 +28,7 @@ const CartDetails = () => {
     const handleClearAll = () => {
         const confirmClear = window.confirm('Are you sure you want to clear all items?');
         if (confirmClear) {
-            setItems([]);
+            dispatch(clearCart());
         }
     };
 
@@ -50,6 +37,8 @@ const CartDetails = () => {
     return (
         <div className="grid md:grid-cols-12 grid-cols-1 lg:gap-5 h-screen md:overflow-hidden">
             <div className='md:col-span-8  pr-2'>
+                <BackBtn className='mb-3' link='/collection' />
+
                 <div className='px-0 py-4'>
                     <div className='flex justify-between items-center'>
                         <div className='flex items-center gap-3'>

@@ -1,48 +1,47 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
+import CustomSlider from '../../utils/CustomSlider';
 import IconHeading from '../../utils/IconHeading';
-import Image from '../../utils/Image';
-import VerticalSeparator from '../../utils/VerticalSeparator';
 import PrimaryBtn from '../PrimaryBtn';
+import Image from '../../utils/Image';
 import Input from '../Input';
 import Dropdown from '../Dropdown';
 import Counter from '../../utils/Counter';
 import AddToCardWedget from '../../utils/AddToCardWedget';
-import CustomSlider from '../../utils/CustomSlider';
-import BackBtn from '../../utils/BackBtn';
 
 import {
+    addmoreIcon,
     arrowUpIcon,
     arrowDownIcon,
     deleteIcon,
     doorIcon,
     infoCircleIcon,
     orderSpec,
-    addmoreIcon,
 } from '../../../../imagesPath';
+import VerticalSeparator from '../../utils/VerticalSeparator';
+import BackBtn from '../../utils/BackBtn';
 
-const Doors = () => {
+const Windows = () => {
     const categories = useSelector(
         (state) =>
+            //   state.api.queries?.['getCategories(undefined)']?.data?.data?.categories || []
             state.api.queries?.['getCategories(undefined)']?.data?.categories || []
     );
 
-    const doorCategory = categories.find(
-        (cat) => cat.name.toLowerCase() === 'doors'
-    );
+    const windowCategory = categories.find((cat) => cat.name.toLowerCase() === 'window');
 
-    const doorTypeOptions =
-        doorCategory?.configuration?.fields?.find((f) => f.name === 'type')?.options || [];
+    const windowTypeOptions =
+        windowCategory?.configuration?.fields?.find((f) => f.name === 'type')?.options || [];
 
     const frameColorOptions =
-        doorCategory?.configuration?.fields?.find((f) => f.name === 'frameColor')?.options || [];
+        windowCategory?.configuration?.fields?.find((f) => f.name === 'frameColor')?.options || [];
 
-    const sliderbanner = doorCategory?.detail_photo_url
-        ? [doorCategory.detail_photo_url]
+    const sliderbanner = windowCategory?.detail_photo_url
+        ? [windowCategory.detail_photo_url]
         : [];
 
-    const [doors, setDoors] = useState([
+    const [window, setWindow] = useState([
         {
             id: Date.now(),
             height: '',
@@ -55,8 +54,8 @@ const Doors = () => {
         },
     ]);
 
-    const handleAddDoor = () => {
-        setDoors((prev) => [
+    const handleAddWindow = () => {
+        setWindow((prev) => [
             ...prev,
             {
                 id: Date.now(),
@@ -71,19 +70,19 @@ const Doors = () => {
         ]);
     };
 
-    const handleRemoveDoor = (id) => {
-        setDoors((prev) => prev.filter((door) => door.id !== id));
+    const handleRemoveWindow = (id) => {
+        setWindow((prev) => prev.filter((w) => w.id !== id));
     };
 
     const handleChange = (id, key, value) => {
-        setDoors((prev) =>
-            prev.map((door) => (door.id === id ? { ...door, [key]: value } : door))
+        setWindow((prev) =>
+            prev.map((w) => (w.id === id ? { ...w, [key]: value } : w))
         );
     };
 
     const toggleAccordion = (id) => {
-        setDoors((prev) =>
-            prev.map((door) => (door.id === id ? { ...door, isOpen: !door.isOpen } : door))
+        setWindow((prev) =>
+            prev.map((w) => (w.id === id ? { ...w, isOpen: !w.isOpen } : w))
         );
     };
 
@@ -106,81 +105,85 @@ const Doors = () => {
                         <PrimaryBtn
                             className="bg-transparent px-[0px] py-[0px]"
                             iconLeft={addmoreIcon}
-                            onClick={handleAddDoor}
+                            onClick={handleAddWindow}
                         >
-                            <span className="text-base-dark lg:text-[16px] text-[12px]">Add Door</span>
+                            <span className="text-base-dark lg:text-[16px] text-[12px]">
+                                Add window
+                            </span>
                         </PrimaryBtn>
                     </div>
 
-                    {doors.map((door, index) => (
+                    {window.map((item, index) => (
                         <div
-                            key={door.id}
+                            key={item.id}
                             className="border border-secondary rounded-large p-[15px] large mt-6"
                         >
                             {/* Header */}
                             <div className="flex justify-between items-center">
                                 <IconHeading
                                     primaryIcon={doorIcon}
-                                    headingText={`Door ${index + 1}`}
+                                    headingText={`window ${index + 1}`}
                                     secondaryIcon={infoCircleIcon}
                                 />
                                 <div className="flex gap-4 items-center">
-                                    <button onClick={() => handleRemoveDoor(door.id)}>
+                                    <button onClick={() => handleRemoveWindow(item.id)}>
                                         <Image img={deleteIcon} />
                                     </button>
                                     <VerticalSeparator className="h-10" />
                                     <PrimaryBtn
                                         className="bg-transparent px-2"
-                                        onClick={() => toggleAccordion(door.id)}
+                                        onClick={() => toggleAccordion(item.id)}
                                     >
-                                        <Image img={door.isOpen ? arrowUpIcon : arrowDownIcon} />
+                                        <Image img={item.isOpen ? arrowUpIcon : arrowDownIcon} />
                                     </PrimaryBtn>
                                 </div>
                             </div>
 
                             {/* Body */}
-                            {door.isOpen && (
+                            {item.isOpen && (
                                 <div className="mt-5">
                                     <form>
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                             <Input
                                                 label="Height"
                                                 unit="sqf"
-                                                value={door.height}
+                                                value={item.height}
                                                 onChange={(e) =>
-                                                    handleChange(door.id, 'height', e.target.value)
+                                                    handleChange(item.id, 'height', e.target.value)
                                                 }
                                             />
                                             <Input
                                                 label="Width"
                                                 unit="sqf"
-                                                value={door.width}
+                                                value={item.width}
                                                 onChange={(e) =>
-                                                    handleChange(door.id, 'width', e.target.value)
+                                                    handleChange(item.id, 'width', e.target.value)
                                                 }
                                             />
                                             <Dropdown
                                                 label="Type"
-                                                options={doorTypeOptions}
-                                                value={door.type}
-                                                onChange={(val) => handleChange(door.id, 'type', val)}
+                                                options={windowTypeOptions}
+                                                value={item.type}
+                                                onChange={(val) => handleChange(item.id, 'type', val)}
                                             />
                                             <Dropdown
                                                 label="Frame Color"
                                                 options={frameColorOptions}
-                                                value={door.frameColor}
-                                                onChange={(val) => handleChange(door.id, 'frameColor', val)}
+                                                value={item.frameColor}
+                                                onChange={(val) =>
+                                                    handleChange(item.id, 'frameColor', val)
+                                                }
                                             />
                                             <Input
                                                 label="Tint Color"
-                                                value={door.tintColor}
+                                                value={item.tintColor}
                                                 onChange={(e) =>
-                                                    handleChange(door.id, 'tintColor', e.target.value)
+                                                    handleChange(item.id, 'tintColor', e.target.value)
                                                 }
                                             />
                                             <Counter
-                                                value={door.qty}
-                                                onChange={(val) => handleChange(door.id, 'qty', val)}
+                                                value={item.qty}
+                                                onChange={(val) => handleChange(item.id, 'qty', val)}
                                                 min={0}
                                                 max={100}
                                             />
@@ -198,4 +201,4 @@ const Doors = () => {
     );
 };
 
-export default Doors;
+export default Windows;

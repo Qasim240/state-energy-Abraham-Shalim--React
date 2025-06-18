@@ -6,7 +6,7 @@ import Solar from '../productCategories/Solar'
 import Insulation from '../productCategories/Insulation'
 import Doors from '../productCategories/Doors'
 import Others from '../productCategories/Others'
-import Window from '../productCategories/Window'
+import Windows from '../productCategories/Windows'
 // import NotFound from '../common/NotFound'
 
 const DetailPage = () => {
@@ -19,8 +19,8 @@ const DetailPage = () => {
         insulation: Insulation,
         doors: Doors,
         others: Others,
-        window: Window,
-        others: Others,
+        windows: Windows,
+        other: Others,
 
     }
 

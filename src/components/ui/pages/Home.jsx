@@ -5,6 +5,7 @@ import { arrowRight, monthlyBillIcon } from '../../../../imagesPath'
 import PrimaryBtn from '../PrimaryBtn'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import BackBtn from '../../utils/BackBtn'
 
 const Home = () => {
     const selectedAppointment = useSelector((state) => state.user.selectedAppointment);
@@ -16,6 +17,8 @@ const Home = () => {
 
     return (
         <>
+            <BackBtn link='/select-appointment' />
+            
             <div className='text-center mt-10'>
                 <span className='text-base-red bg-base-red-200 font-Avenir font-medium px-4 py-3 rounded-[12px] text-[14px] '>
                     Utilization Details

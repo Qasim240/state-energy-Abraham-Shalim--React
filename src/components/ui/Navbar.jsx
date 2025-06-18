@@ -6,12 +6,13 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../../features/slices/userSlice.js'
 const Navbar = () => {
+    const cartCount = useSelector((state) => state.user.cartCount);
+
     const [openDropdown, setOpenDropdown] = useState(false)
     const dropdownRef = useRef()
     const user = useSelector((state) => state.user.user);
     const dispatch = useDispatch();
 
-    // const user = useSelector((state) => state.user.user);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -50,7 +51,7 @@ const Navbar = () => {
                     <Link to="/cart-details">
                         <span className='relative'>
                             <p className='bg-base-red p-2 h-[24px] w-[24px] flex justify-center items-center rounded-full font-Avenir font-extrabold text-white absolute top-[9px] left-[-10px] text-[12px]'>
-                                0
+                                {cartCount}
                             </p>
 
 
