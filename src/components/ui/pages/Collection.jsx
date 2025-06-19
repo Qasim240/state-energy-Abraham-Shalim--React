@@ -9,17 +9,10 @@ import { setCategories } from '../../../features/slices/userSlice.js';
 const Collection = () => {
     const dispatch = useDispatch();
     const { data, isLoading, isError } = useGetCategoriesQuery();
-
-
-
-
-
     const categories = data?.data?.categories || [];
-
-
     console.log("categories", categories)
 
-    // Cache categories in Redux store
+
     useEffect(() => {
         if (categories.length) {
             dispatch(setCategories(categories));

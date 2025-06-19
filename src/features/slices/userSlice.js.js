@@ -65,6 +65,8 @@ const userSlice = createSlice({
       state.isLoggedIn = false;
       state.selectedAppointment = null;
       state.categories = [];
+      state.cart = [];
+      state.cartCount = 0;
 
       state.roofSelection = {
         variant: '',
@@ -134,6 +136,8 @@ const userSlice = createSlice({
     setOtherSelection: (state, action) => {
       state.otherSelection = action.payload;
     },
+
+    // ✅ Local cart operations
     addToCart: (state, action) => {
       if (!Array.isArray(state.cart)) {
         state.cart = [];
@@ -149,6 +153,17 @@ const userSlice = createSlice({
     clearCart: (state) => {
       state.cart = [];
       state.cartCount = 0;
+    },
+
+    // ✅ Sync cart directly from backend
+    setCart: (state, action) => {
+      state.cart = action.payload;
+      state.cartCount = action.payload.length;
+    },
+
+    // ✅ Only update count (optional use)
+    setCartCount: (state, action) => {
+      state.cartCount = action.payload;
     }
   },
 });
@@ -166,10 +181,12 @@ export const {
   setWindowSelection,
   setDoorSelection,
   setInsulationSelection,
-  setOtherSelection, // New action for Other category
+  setOtherSelection,
   addToCart,
   removeCartItem,
   clearCart,
+  setCart,
+  setCartCount,
 } = userSlice.actions;
 
 export default userSlice.reducer;

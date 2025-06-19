@@ -38,7 +38,8 @@ function App() {
             <Route path="/customer-signature" element={<CustomerSignature />} />
             <Route path="/all-orders" element={<AllOrder />} />
             <Route path="/single-invoice" element={<SingleInvoice />} />
-            <Route path="/collection/:category" element={<DetailPage />} />
+            <Route path="/collection/:category/:cartId?" element={<DetailPage />} />
+
           </Route>
         </Route>
       </Routes>

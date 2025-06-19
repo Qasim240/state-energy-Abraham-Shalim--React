@@ -65,7 +65,37 @@ export const apiSlice = createApi({
                 url: '/cart',
                 method: 'GET',
             }),
+            providesTags: ['Cart'],
+            refetchOnMountOrArgChange: true,
+            keepUnusedDataFor: 0,
         }),
+
+
+
+        deleteCartItem: builder.mutation({
+            query: (cartId) => ({
+                url: `/cart/${cartId}`,
+                method: 'DELETE',
+            }),
+        }),
+
+        clearCartApi: builder.mutation({
+            query: () => ({
+                url: `/userCart/clear-cart`,
+                method: 'DELETE',
+            }),
+        }),
+
+        editCartItem: builder.mutation({
+            query: ({ cartId, updatedData }) => ({
+                url: `/cart/${cartId}`,
+                method: 'PUT',
+                body: updatedData,
+            }),
+        }),
+
+
+
     }),
 });
 
@@ -75,5 +105,8 @@ export const {
     useChangePasswordMutation,
     useGetCategoriesQuery,
     useAddToCartMutation,
-    useGetCartQuery
+    useGetCartQuery,
+    useDeleteCartItemMutation,
+    useClearCartApiMutation,
+    useEditCartItemMutation,
 } = apiSlice;
