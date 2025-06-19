@@ -2,15 +2,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const apiSlice = createApi({
-
-
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        // baseUrl: 'http://192.168.100.131/state-energy/public/api/v1',
-        baseUrl: 'http://localhost:3000',
-
+        baseUrl: 'http://192.168.100.131/state-energy/public/api/v1',
         prepareHeaders: (headers, { getState }) => {
-
             headers.set('Accept', 'application/json');
             const user = getState().user.user;
             const token = user ? user.token : null;
@@ -18,7 +13,6 @@ export const apiSlice = createApi({
                 headers.set('Authorization', `Bearer ${token}`);
                 console.log('Token is inside apiSlice.js', token);
             }
-
             return headers;
         },
     }),
@@ -48,19 +42,38 @@ export const apiSlice = createApi({
                 body,
             }),
         }),
+
         getCategories: builder.query({
             query: (body) => ({
-                // url: '/categories',
-                url: '/data',
+                url: '/categories',
                 method: 'GET',
                 body,
             }),
         }),
 
+        // Add to Cart Mutation (correctly placed at the root level)
+        addToCart: builder.mutation({
+            query: (cartData) => ({
+                url: '/cart',
+                method: 'POST',
+                body: cartData,
+            }),
+        }),
 
+        getCart: builder.query({
+            query: () => ({
+                url: '/cart',
+                method: 'GET',
+            }),
+        }),
     }),
-
-
 });
 
-export const { useLoginMutation, useGetAppointmentsQuery, useChangePasswordMutation, useGetCategoriesQuery } = apiSlice;
+export const {
+    useLoginMutation,
+    useGetAppointmentsQuery,
+    useChangePasswordMutation,
+    useGetCategoriesQuery,
+    useAddToCartMutation,
+    useGetCartQuery
+} = apiSlice;

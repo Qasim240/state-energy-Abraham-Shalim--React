@@ -10,7 +10,14 @@ const Collection = () => {
     const dispatch = useDispatch();
     const { data, isLoading, isError } = useGetCategoriesQuery();
 
-    const categories = data?.categories || [];
+
+
+
+
+    const categories = data?.data?.categories || [];
+
+
+    console.log("categories", categories)
 
     // Cache categories in Redux store
     useEffect(() => {

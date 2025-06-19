@@ -5,7 +5,7 @@ import {
     orderSpec,
 } from '../../../../imagesPath';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import IconHeading from '../../utils/IconHeading';
 import CustomSlider from '../../utils/CustomSlider';
 import BackBtn from '../../utils/BackBtn';
@@ -13,36 +13,44 @@ import Dropdown from '../Dropdown';
 import Input from '../Input';
 import AdderSelector from '../../utils/AdderSelector';
 import AddToCardWedget from '../../utils/AddToCardWedget';
+import { useAddToCartMutation } from '../../../features/api/apiSlice';
+
+import { setInsulationSelection, addToCart } from '../../../features/slices/userSlice.js';
+
+import { toast } from 'react-toastify';
+import * as yup from 'yup';
 
 const Insulation = () => {
+    const dispatch = useDispatch();
+    const [addToCartApi, { isLoading }] = useAddToCartMutation();
+
+    const saved = useSelector(state => state.user.insulationSelection || {});
     const categories = useSelector(
         (state) =>
-            state.api.queries?.['getCategories(undefined)']?.data?.categories || []
+            state.api.queries?.['getCategories(undefined)']?.data?.data?.categories || []
     );
 
     const insulationCategory = categories.find(
         (cat) => cat.name.toLowerCase() === 'insulation'
     );
 
-    const [selectedVariant, setSelectedVariant] = useState('');
-    const [selectedRValue, setSelectedRValue] = useState('');
-    const [squareFootage, setSquareFootage] = useState('');
-    const [includeInsulationRemoval, setInsulationRemoval] = useState(false);
-    const [selectedAdders, setSelectedAdders] = useState([]);
+    const [selectedVariant, setSelectedVariant] = useState(saved.subCategory || '');
+    const [selectedRValue, setSelectedRValue] = useState(saved.rValue || '');
+    const [squareFootage, setSquareFootage] = useState(saved.squareFootage || '');
+    const [includeInsulationRemoval, setInsulationRemoval] = useState(saved.insulationRemoval || false);
+    const [selectedAdders, setSelectedAdders] = useState(saved.adders || []);
+    const [errors, setErrors] = useState({});
 
-    const sliderBanner = insulationCategory?.detail_photo_url
-        ? [insulationCategory.detail_photo_url]
-        : [];
+    if (!insulationCategory) return <p className="text-center text-gray-500 mt-10">Loading insulation data...</p>;
 
+    const sliderBanner = [insulationCategory?.detail_photo_url];
     const fields = insulationCategory?.configuration?.fields || [];
     const pricing = insulationCategory?.pricing || {};
     const adders = insulationCategory?.adders?.map((a) => a.name) || [];
 
-    // Get category options
     const categoryOptions =
         fields.find((f) => f.name === 'sub_category')?.options || [];
 
-    // Get R-Value options dynamically from configuration
     const rValueDynamicOptions =
         fields.find((f) => f.name === 'r_value')?.options || {};
 
@@ -55,18 +63,89 @@ const Insulation = () => {
     };
 
     useEffect(() => {
-        if (categoryOptions.length > 0) {
+        if (categoryOptions.length > 0 && !selectedVariant) {
             setSelectedVariant(categoryOptions[0]);
         }
     }, [categoryOptions]);
 
     useEffect(() => {
-        if (rValueOptions.length > 0) {
+        if (rValueOptions.length > 0 && !selectedRValue) {
             setSelectedRValue(rValueOptions[0]);
         }
     }, [rValueOptions]);
 
-    // Calculate price dynamically
+    useEffect(() => {
+        dispatch(setInsulationSelection({
+            subCategory: selectedVariant,
+            rValue: selectedRValue,
+            squareFootage,
+            insulationRemoval: includeInsulationRemoval,
+            adders: selectedAdders
+        }));
+    }, [selectedVariant, selectedRValue, squareFootage, includeInsulationRemoval, selectedAdders, dispatch]);
+
+    const validate = async () => {
+        const schema = yup.object().shape({
+            subCategory: yup.string().required('Please select insulation type'),
+            rValue: yup.string().required('Please select R-value'),
+            squareFootage: yup
+                .number()
+                .typeError('Square Footage must be a number')
+                .required('Square Footage is required')
+                .positive('Must be a positive number'),
+        });
+
+        try {
+            await schema.validate({
+                subCategory: selectedVariant,
+                rValue: selectedRValue,
+                squareFootage
+            }, { abortEarly: false });
+            setErrors({});
+            return true;
+        } catch (err) {
+            const errorObj = {};
+            err.inner.forEach(e => {
+                errorObj[e.path] = e.message;
+            });
+            setErrors(errorObj);
+            return false;
+        }
+    };
+
+    const handleSubmit = async () => {
+        const isValid = await validate();
+        if (!isValid) return toast.error('Please fix errors before submitting');
+
+        const payload = {
+            category_id: insulationCategory.id,
+            configuration: {
+                sub_category: selectedVariant,
+                r_value: selectedRValue,
+                square_footage: squareFootage,
+                insulation_removal: includeInsulationRemoval,
+            },
+            adders: selectedAdders.map(name => {
+                const found = insulationCategory.adders.find(a => a.name === name);
+                return {
+                    id: found.id,
+                    name: found.name,
+                    price: found.price.toString(),
+                };
+            })
+        };
+
+        try {
+            const response = await addToCartApi(payload).unwrap();
+            if (response.success) {
+                dispatch(addToCart(response.data.cart));
+                toast.success('Insulation added to cart!');
+            }
+        } catch (err) {
+            toast.error(err?.data?.message || 'Failed to add to cart');
+        }
+    };
+
     const totalPrice = pricing?.[selectedVariant]?.[selectedRValue] || '0';
 
     return (
@@ -78,19 +157,15 @@ const Insulation = () => {
 
             <div className="col-span-12 md:col-span-8 flex flex-col min-h-full mt-4">
                 <div className="flex flex-col flex-grow">
-                    <IconHeading
-                        primaryIcon={categoryIcon}
-                        headingText="Choose Insulation Type"
-                        secondaryIcon={infoCircleIcon}
-                    />
+                    <IconHeading primaryIcon={categoryIcon} headingText="Choose Insulation Type" secondaryIcon={infoCircleIcon} />
 
                     <div className="flex gap-4 flex-wrap my-8">
                         {categoryOptions.map((variant) => (
                             <label
                                 key={variant}
                                 className={`px-5 py-2 text-nowrap text-center rounded-full font-Avenir font-medium border cursor-pointer transition ${selectedVariant === variant
-                                        ? 'bg-base-dark text-white border-base'
-                                        : 'bg-white text-black border-gray-300'
+                                    ? 'bg-base-dark text-white border-base'
+                                    : 'bg-white text-black border-gray-300'
                                     }`}
                             >
                                 <input
@@ -105,6 +180,7 @@ const Insulation = () => {
                             </label>
                         ))}
                     </div>
+                    {errors.subCategory && <p className="text-red-500 text-sm">{errors.subCategory}</p>}
 
                     <IconHeading
                         primaryIcon={orderSpec}
@@ -120,6 +196,7 @@ const Insulation = () => {
                                 label="R-Value"
                                 value={selectedRValue}
                                 onChange={(val) => setSelectedRValue(val)}
+                                error={errors.rValue}
                             />
                         </div>
                         <div className="col-span-6">
@@ -127,9 +204,10 @@ const Insulation = () => {
                                 type="text"
                                 unit="sqf"
                                 label="Square Footage"
-                                placeholder="eg 2.5"
+                                placeholder="e.g. 1500"
                                 value={squareFootage}
                                 onChange={(e) => setSquareFootage(e.target.value)}
+                                error={errors.squareFootage}
                             />
                         </div>
                     </div>
@@ -139,6 +217,7 @@ const Insulation = () => {
                             <input
                                 onChange={() => setInsulationRemoval((prev) => !prev)}
                                 type="checkbox"
+                                checked={includeInsulationRemoval}
                                 className="sr-only peer"
                             />
                             <div className="relative w-11 h-6 bg-gray-200 rounded-full peer peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-primary/50 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:bg-primary" />
@@ -159,7 +238,7 @@ const Insulation = () => {
                         </>
                     )}
 
-                    <AddToCardWedget totalPrice={totalPrice} />
+                    <AddToCardWedget totalPrice={totalPrice} onAddToCart={handleSubmit} isLoading={isLoading} />
                 </div>
             </div>
         </div>

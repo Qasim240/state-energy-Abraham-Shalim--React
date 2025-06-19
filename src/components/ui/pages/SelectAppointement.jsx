@@ -11,6 +11,7 @@ import LongBarSkeltion from '../../utils/longBarSkeltion.jsx';
 const SelectAppointment = () => {
     const { data, isLoading, isError } = useGetAppointmentsQuery();
     const appointments = data?.data?.events || [];
+    console.log("appointments", appointments)
     const selectedAppointment = useSelector((state) => state.user.selectedAppointment);
 
 
@@ -22,10 +23,11 @@ const SelectAppointment = () => {
 
     const handleSelect = (e) => {
         const selectedItemId = e.target.value;
-        setSelectedId(() => selectedItemId);
-        const selected = appointments.find((a) => a.id === selectedId);
+        setSelectedId(selectedItemId); 
+        const selected = appointments.find((a) => a.id === selectedItemId); // Use this directly
         dispatch(setSelectedAppointment(selected));
     };
+
 
 
     const handleProceed = () => {

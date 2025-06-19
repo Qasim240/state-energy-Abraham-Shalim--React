@@ -5,9 +5,10 @@ import Image from '../utils/Image'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../../features/slices/userSlice.js'
+import { useNavigate } from 'react-router-dom'
 const Navbar = () => {
     const cartCount = useSelector((state) => state.user.cartCount);
-
+    const navigate = useNavigate()
     const [openDropdown, setOpenDropdown] = useState(false)
     const dropdownRef = useRef()
     const user = useSelector((state) => state.user.user);

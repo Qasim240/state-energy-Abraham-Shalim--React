@@ -14,16 +14,20 @@ const CustomSlider = ({ items = [] }) => {
         slidesToScroll: 1,
         arrows: false,
         autoplay: true,
-        autoplaySpeed: 2000
+        autoplaySpeed: 2000,
+        adaptiveHeight: true // Ensures proper height for single slide
     };
+
+    // If no items, return null or placeholder
+    if (items.length === 0) return null;
 
     return (
         <div className='sticky top-0'>
             <div className="slider-container relative">
                 <Slider {...settings}>
-                    {items.filter(Boolean).map((item, index) => (
-                        <div key={index}>
-                            <Image className="w-full" img={item} />
+                    {items.map((item, index) => (
+                        <div key={index} className="w-full">
+                            <Image className="w-full h-auto" img={item} />
                         </div>
                     ))}
                 </Slider>
