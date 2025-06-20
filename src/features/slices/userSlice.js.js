@@ -10,6 +10,7 @@ const initialState = {
   categories: [],
   cart: [],
   cartCount: 0,
+  fetchedOrders: [],
 
   roofSelection: {
     variant: '',
@@ -136,8 +137,11 @@ const userSlice = createSlice({
     setOtherSelection: (state, action) => {
       state.otherSelection = action.payload;
     },
+    setFetchedOrders: (state, action) => {
+      state.fetchedOrders = action.payload;
+    },
 
-    // ✅ Local cart operations
+    // Local cart operations
     addToCart: (state, action) => {
       if (!Array.isArray(state.cart)) {
         state.cart = [];
@@ -155,13 +159,13 @@ const userSlice = createSlice({
       state.cartCount = 0;
     },
 
-    // ✅ Sync cart directly from backend
+    //  Sync cart directly from backend
     setCart: (state, action) => {
       state.cart = action.payload;
       state.cartCount = action.payload.length;
     },
 
-    // ✅ Only update count (optional use)
+    //  Only update count (optional use)
     setCartCount: (state, action) => {
       state.cartCount = action.payload;
     }
@@ -187,6 +191,7 @@ export const {
   clearCart,
   setCart,
   setCartCount,
+  setFetchedOrders
 } = userSlice.actions;
 
 export default userSlice.reducer;

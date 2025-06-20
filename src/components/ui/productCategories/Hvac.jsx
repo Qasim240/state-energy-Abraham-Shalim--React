@@ -13,11 +13,16 @@ import AddToCardWedget from '../../utils/AddToCardWedget';
 import CustomSlider from '../../utils/CustomSlider';
 import BackBtn from '../../utils/BackBtn';
 import { useDispatch, useSelector } from 'react-redux';
-import { useAddToCartMutation, useGetCategoriesQuery } from '../../../features/api/apiSlice';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  useAddToCartMutation,
+  useEditCartItemMutation,
+  useGetCategoriesQuery
+} from '../../../features/api/apiSlice';
 import { addToCart, setHvacSelection } from '../../../features/slices/userSlice.js';
 import { toast } from 'react-toastify';
 
-// ✅ Validation schema
+// ✅ Schema
 const hvacSchema = yup.object().shape({
   capacity: yup
     .number()
@@ -30,7 +35,12 @@ const hvacSchema = yup.object().shape({
 
 const Hvac = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { cartId } = useParams();
+  const isEditMode = !!cartId;
+
   const [addToCartApi, { isLoading }] = useAddToCartMutation();
+  const [editCartItemApi] = useEditCartItemMutation();
   const { data, isLoading: isCatLoading } = useGetCategoriesQuery();
 
   const savedHvac = useSelector((state) => state.user.hvacSelection || {});
@@ -64,19 +74,27 @@ const Hvac = () => {
     return <p className="text-center mt-10 text-gray-500">Loading HVAC Data...</p>;
   }
 
-  const { configuration, adders, detail_photo_url } = hvacData;
+  const { configuration, adders, detail_photo_url, pricing } = hvacData;
 
   const toggleAdder = (adder) =>
     setSelectedAdders((prev) =>
       prev.includes(adder) ? prev.filter((a) => a !== adder) : [...prev, adder]
     );
 
-  const onSubmit = async (data) => {
+  const handleAddOrUpdate = async (formData) => {
+    const configPayload = {
+      capacity: formData.capacity
+    };
+
+    const metaFields = {
+      fields: configuration.fields
+    };
+
     const payload = {
       category_id: hvacData.id,
-      configuration: {
-        capacity: data.capacity
-      },
+      configuration: configPayload,
+      configuration_meta: metaFields,
+      pricing_meta: pricing || {},
       adders: selectedAdders.map(name => {
         const found = adders.find(a => a.name === name);
         return {
@@ -84,18 +102,22 @@ const Hvac = () => {
           name: found.name,
           price: found.price.toString()
         };
-      })
+      }),
+      price: 200
     };
 
     try {
-      const response = await addToCartApi(payload).unwrap();
+      const response = isEditMode
+        ? await editCartItemApi({ cartId, updatedData: payload }).unwrap()
+        : await addToCartApi(payload).unwrap();
 
       if (response.success) {
-        dispatch(addToCart({ ...response.data.cart }));
-        toast.success('Added to cart successfully!');
+        dispatch(addToCart(response.data.cart));
+        toast.success(isEditMode ? 'Cart item updated!' : 'Added to cart!');
+        if (isEditMode) navigate('/cart-details');
       }
     } catch (error) {
-      toast.error(error?.data?.message || 'Failed to add to cart');
+      toast.error(error?.data?.message || 'Action failed');
     }
   };
 
@@ -107,7 +129,7 @@ const Hvac = () => {
       </div>
 
       <div className="col-span-12 lg:col-span-8 flex flex-col min-h-full mt-4 lg:mt-0">
-        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col flex-grow">
+        <form onSubmit={handleSubmit(handleAddOrUpdate)} className="flex flex-col flex-grow">
           <div className="grid md:grid-cols-2 gap-4 mt-6">
             <Controller
               name="capacity"
@@ -137,8 +159,9 @@ const Hvac = () => {
 
         <AddToCardWedget
           totalPrice="200"
-          onAddToCart={handleSubmit(onSubmit)}
+          onAddToCart={handleSubmit(handleAddOrUpdate)}
           isLoading={isLoading}
+          isEditMode={isEditMode}
         />
       </div>
     </div>

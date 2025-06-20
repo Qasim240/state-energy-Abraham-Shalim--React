@@ -14,9 +14,7 @@ import { useForm } from 'react-hook-form';
 
 const Userprofile = () => {
     const user = useSelector((state) => state.user.user);
-
-
-    const {  setValue, formState: { errors } } = useForm();
+    const { setValue, formState: { errors } } = useForm();
 
     useEffect(() => {
         if (user) {
@@ -24,10 +22,8 @@ const Userprofile = () => {
             setValue('firstName', user.full_name || '');
             setValue('firstName', user.email || '');
             setValue('firstName', user.country || '');
-
         }
     }, [user, setValue]);
-
 
 
 
@@ -55,7 +51,7 @@ const Userprofile = () => {
                     </div>
                     <span className={`${fontMedium} text-base-dark`}>{user.full_name}</span>
                     <p className="text-base-dark text-[14px] font-Avenir">{user.email}</p>
-                    <p className="text-base-50 text-[14px] font-Avenir">{user.email}</p>
+                    <p className="text-base-50 text-[14px] font-Avenir">{user.country}</p>
                 </div>
             </div>
 
@@ -85,15 +81,10 @@ const Userprofile = () => {
                     }}
                 >
                     <Tabs.Item active title="General Information">
-
                         <UserProfileForm />
-
-
                     </Tabs.Item>
 
                     <Tabs.Item title="Digital Signature">
-
-
                         <IconHeading className='lg:text-[16px] text-[12px] my-8' primaryIcon={supportIcon} headingText="Customer Signature" secondaryIcon={infoCircleIcon} />
                         <div className='border border-secondary p-4 rounded-large lg:mt-4 '>
 
@@ -111,13 +102,7 @@ const Userprofile = () => {
                             </PrimaryBtn>
                         </div>
 
-
-
-
                     </Tabs.Item>
-
-
-
                     <Tabs.Item title="Security">
 
                         <ForgetPasswordForm />

@@ -37,7 +37,7 @@ function App() {
             <Route path="/loan-finance" element={<LoanFinance />} />
             <Route path="/customer-signature" element={<CustomerSignature />} />
             <Route path="/all-orders" element={<AllOrder />} />
-            <Route path="/single-invoice" element={<SingleInvoice />} />
+            <Route path="/invoice/:orderId" element={<SingleInvoice />} />
             <Route path="/collection/:category/:cartId?" element={<DetailPage />} />
 
           </Route>

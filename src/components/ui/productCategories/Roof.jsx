@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   categoryIcon,
-  infoCircleIcon,
-  orderSpec
+  infoCircleIcon
 } from '../../../../imagesPath';
 import Input from '../Input';
 import IconHeading from '../../utils/IconHeading';
@@ -10,112 +9,133 @@ import AdderSelector from '../../utils/AdderSelector';
 import AddToCardWedget from '../../utils/AddToCardWedget';
 import CustomSlider from '../../utils/CustomSlider';
 import BackBtn from '../../utils/BackBtn';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Dropdown from '../Dropdown';
 import RoofSkeleton from '../../utils/RoofSkeleton.jsx';
 import { toast } from 'react-toastify';
-import { useAddToCartMutation } from '../../../features/api/apiSlice.js';
-import { setRoofSelection, addToCart } from '../../../features/slices/userSlice.js';
-
+import {
+  useAddToCartMutation,
+  useEditCartItemMutation
+} from '../../../features/api/apiSlice.js';
+import { addToCart } from '../../../features/slices/userSlice.js';
 import { useForm, Controller } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useParams } from 'react-router-dom';
 
-const schema = yup.object().shape({
-  squareFootage: yup
+// ✅ Validation schema
+const schema = yup.object({
+  variant: yup.string().required('Please select a roof variant'),
+  square_footage: yup
     .number()
     .typeError('Square footage must be a number')
-    .positive('Must be greater than 0')
-    .required('Square footage is required'),
-  color: yup.string().required('Color is required')
+    .required('Please enter square footage')
+    .positive('Must be positive'),
+  color: yup.string().required('Please select a color'),
 });
 
 const Roof = () => {
   const dispatch = useDispatch();
+  const { cartId } = useParams();
+  const isEditMode = !!cartId;
+
   const [addToCartApi, { isLoading }] = useAddToCartMutation();
+  const [editCartItemApi] = useEditCartItemMutation();
+
   const categories = useSelector((state) => state.user.categories);
-  const savedRoof = useSelector((state) => state.user.roofSelection || {});
+  const cartItems = useSelector((state) => state.user.cart);
+  const existingCartItem = cartItems.find((item) => item.id == cartId);
   const roofData = categories.find((cat) => cat.name.toLowerCase() === 'roof');
 
-  const [selectedVariant, setSelectedVariant] = useState(savedRoof.variant || '');
-  const [selectedAdders, setSelectedAdders] = useState(savedRoof.adders || []);
+  const [selectedAdders, setSelectedAdders] = useState([]);
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
     watch
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      squareFootage: savedRoof.squareFootage || '',
-      color: savedRoof.color || ''
+      variant: '',
+      square_footage: '',
+      color: ''
     }
   });
 
-  const squareFootage = watch('squareFootage');
-  const color = watch('color');
-
+  // Prefill form and adder data
   useEffect(() => {
-    if (roofData && !savedRoof.variant) {
-      const defaultCategory = roofData.configuration.fields.find(f => f.name === 'category')?.options[0];
-      setSelectedVariant(defaultCategory || '');
-    }
-  }, [roofData, savedRoof.variant]);
+    if (!roofData) return;
 
-  useEffect(() => {
-    dispatch(setRoofSelection({
-      variant: selectedVariant,
-      squareFootage,
-      color,
-      adders: selectedAdders
-    }));
-  }, [selectedVariant, squareFootage, color, selectedAdders, dispatch]);
+    const configFields = roofData.configuration?.fields || [];
 
-  const toggleAdder = (adderName) => {
+    configFields.forEach((field) => {
+      const name = field.name;
+      const defaultValue =
+        isEditMode && existingCartItem?.configuration?.[name]
+          ? existingCartItem.configuration[name]
+          : '';
+      setValue(name, defaultValue);
+    });
+
+    const adderNames = isEditMode
+      ? existingCartItem?.adders?.map((a) => a.name) || []
+      : [];
+    setSelectedAdders(adderNames);
+  }, [roofData, isEditMode, existingCartItem, setValue]);
+
+  const toggleAdder = (name) => {
     setSelectedAdders((prev) =>
-      prev.includes(adderName)
-        ? prev.filter((a) => a !== adderName)
-        : [...prev, adderName]
+      prev.includes(name)
+        ? prev.filter((a) => a !== name)
+        : [...prev, name]
     );
   };
 
-  const handleAddToCart = async (formData) => {
+  const handleAddOrUpdate = async (formData) => {
+    const configFields = roofData.configuration?.fields || [];
+
+    const configuration = {};
+    configFields.forEach((field) => {
+      const val = formData[field.name];
+      if (val !== undefined) {
+        configuration[field.name] = typeof val === 'number' ? val.toString() : val;
+      }
+    });
+
+    const payload = {
+      category_id: roofData.id,
+      configuration,
+      adders: selectedAdders.map((name) => {
+        const match = roofData.adders.find((a) => a.name === name);
+        return {
+          id: match.id,
+          name: match.name,
+          price: match.price.toString()
+        };
+      })
+    };
+
     try {
-      const cartData = {
-        category_id: roofData.id,
-        configuration: {
-          variant: selectedVariant,
-          square_footage: formData.squareFootage.toString(),
-          color: formData.color
-        },
-        adders: selectedAdders.map(name => {
-          const adder = roofData.adders.find(a => a.name === name);
-          return {
-            id: adder.id,
-            name: adder.name,
-            price: adder.price.toString()
-          };
-        })
-      };
-
-      const response = await addToCartApi(cartData).unwrap();
-
-      if (response.success) {
-        dispatch(addToCart({ ...response.data.cart }));
-        toast.success('Added to cart successfully!');
+      if (isEditMode) {
+        await editCartItemApi({ cartId, updatedData: payload }).unwrap();
+        toast.success('Updated cart item');
+      } else {
+        const res = await addToCartApi(payload).unwrap();
+        if (res.success) {
+          dispatch(addToCart({ ...res.data.cart }));
+          toast.success('Added to cart');
+        }
       }
     } catch (err) {
-      toast.error(err.data?.message || 'Failed to add to cart');
+      toast.error(err.data?.message || 'Failed to submit cart');
     }
   };
 
   if (!roofData) return <RoofSkeleton />;
 
   const { configuration, adders, detail_photo_url } = roofData;
-  const categoryOptions = configuration.fields.find(f => f.name === 'category')?.options || [];
-  const colorOptions = configuration.fields.find(f => f.name === 'color')?.options || [];
-
   const fieldMap = Object.fromEntries(
     (configuration?.fields || []).map((f) => [f.name, f])
   );
@@ -123,24 +143,24 @@ const Roof = () => {
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-12 md:col-span-4 hidden md:block">
-        <BackBtn className='mb-3' link='/collection' />
+        <BackBtn className="mb-3" link="/collection" />
         <CustomSlider items={detail_photo_url ? [detail_photo_url] : []} />
       </div>
 
       <div className="col-span-12 md:col-span-8 flex flex-col min-h-full mt-4">
-        <div className='flex flex-col flex-grow'>
+        <div className="flex flex-col flex-grow">
           <IconHeading
             primaryIcon={categoryIcon}
-            headingText={fieldMap.category?.label}
+            headingText="Choose Variant"
             secondaryIcon={infoCircleIcon}
           />
 
           <div className="flex gap-4 flex-wrap my-8">
-            {categoryOptions.map((variant) => (
+            {fieldMap.variant?.options?.map((variantOption) => (
               <label
-                key={variant}
+                key={variantOption}
                 className={`px-5 py-2 w-[100px] text-center rounded-full font-Avenir font-medium border cursor-pointer transition
-                  ${selectedVariant === variant
+                  ${watch('variant') === variantOption
                     ? 'bg-base-dark text-white border-base'
                     : 'bg-white text-black border-gray-300'
                   }`}
@@ -148,20 +168,21 @@ const Roof = () => {
                 <input
                   type="radio"
                   name="variant"
-                  value={variant}
+                  value={variantOption}
                   className="hidden"
-                  checked={selectedVariant === variant}
-                  onChange={() => setSelectedVariant(variant)}
+                  checked={watch('variant') === variantOption}
+                  onChange={() => setValue('variant', variantOption)}
                 />
-                {variant}
+                {variantOption}
               </label>
             ))}
+            {errors.variant && <p className="text-red-500 text-xs mt-1">{errors.variant.message}</p>}
           </div>
 
           <div className="grid md:grid-cols-12 gap-4 mt-6">
             <div className="col-span-6">
               <Controller
-                name="squareFootage"
+                name="square_footage"
                 control={control}
                 render={({ field }) => (
                   <Input
@@ -169,7 +190,7 @@ const Roof = () => {
                     type="number"
                     label={fieldMap.square_footage?.label}
                     placeholder="2000"
-                    error={errors.squareFootage?.message}
+                    error={errors.square_footage?.message}
                   />
                 )}
               />
@@ -182,7 +203,7 @@ const Roof = () => {
                   <Dropdown
                     {...field}
                     label={fieldMap.color?.label}
-                    options={colorOptions}
+                    options={fieldMap.color?.options || []}
                     error={errors.color?.message}
                   />
                 )}
@@ -200,8 +221,9 @@ const Roof = () => {
 
         <AddToCardWedget
           totalPrice="200"
-          onAddToCart={handleSubmit(handleAddToCart)}
+          onAddToCart={handleSubmit(handleAddOrUpdate)}
           isLoading={isLoading}
+          isEditMode={isEditMode}
         />
       </div>
     </div>

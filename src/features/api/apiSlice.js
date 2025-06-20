@@ -94,6 +94,39 @@ export const apiSlice = createApi({
             }),
         }),
 
+        getCrmContact: builder.query({
+            query: (contactId) => ({
+                url: `/user/get-crm-contact`,
+                method: 'GET',
+                params: { contact_id: contactId },
+            }),
+        }),
+
+        createOrder: builder.mutation({
+            query: (body) => ({
+                url: '/order',
+                method: 'POST',
+                body
+
+            }),
+        }),
+        getOrders: builder.query({
+            query: () => ({
+                url: '/order',
+                method: 'GET',
+            }),
+        }),
+
+
+        updateUserProfile: builder.mutation({
+            query: ({ userId, body }) => ({
+                url: `/users/${userId}`,
+                method: 'PUT',
+                body,
+            }),
+        }),
+
+
 
 
     }),
@@ -109,4 +142,8 @@ export const {
     useDeleteCartItemMutation,
     useClearCartApiMutation,
     useEditCartItemMutation,
+    useGetCrmContactQuery,
+    useCreateOrderMutation,
+    useGetOrdersQuery,
+    useUpdateUserProfileMutation
 } = apiSlice;

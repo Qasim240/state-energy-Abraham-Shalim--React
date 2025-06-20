@@ -2,10 +2,17 @@ import React from 'react';
 import { calcicon } from '../../../imagesPath';
 import PrimaryBtn from '../ui/PrimaryBtn';
 import Image from './Image';
+import { Spinner } from 'flowbite-react';
 
-const AddToCardWedget = ({ totalPrice, className = '', onAddToCart, isLoading = false }) => {
+const AddToCardWedget = ({
+    totalPrice,
+    className = '',
+    onAddToCart,
+    isLoading = false,
+    isEditMode = false
+}) => {
     return (
-        <div className={`mt-auto border mb-4 bg-[#F1F6FF] rounded-large border-primary large p-4 flex lg:justify-between justify-center items-center flex-wrap gap-4 ${className}`}>
+        <div className={`mt-auto border mb-4 bg-[#F1F6FF]  sticky bottom-0 rounded-large border-primary large p-4 flex lg:justify-between justify-center items-center flex-wrap gap-4 ${className}`}>
             <div className='flex items-center gap-4'>
                 <Image img={calcicon} />
                 <div>
@@ -25,7 +32,9 @@ const AddToCardWedget = ({ totalPrice, className = '', onAddToCart, isLoading = 
                     onClick={onAddToCart}
                     disabled={isLoading}
                 >
-                    {isLoading ? 'Adding...' : 'Add to Cart'}
+                    {isLoading
+                        ? (isEditMode ? 'Updating...' : 'Adding...')
+                        : (isEditMode ? 'Update Item' : 'Add to Cart')}
                 </PrimaryBtn>
             </div>
         </div>

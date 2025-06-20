@@ -3,15 +3,25 @@ import PrimaryBtn from '../PrimaryBtn';
 import Input from '../Input';
 import PriceCard from '../PriceCard';
 import IconHeading from '../../utils/IconHeading';
-import {
-    downloadIcon,
-    generalinfoIcon,
-    infoCircleIcon
-} from '../../../../imagesPath';
+import { downloadIcon, generalinfoIcon, infoCircleIcon } from '../../../../imagesPath';
 import { Link } from 'react-router-dom';
 import { fontMedium } from '../../utils/fontMedium';
+import { useSelector } from 'react-redux';
+import { useGetCrmContactQuery } from '../../../features/api/apiSlice';
 
 const AddUSerInfo = () => {
+
+
+
+    const contactId = useSelector(state => state.user.selectedAppointment.contactId);
+
+    const { data, isLoading, isError } = useGetCrmContactQuery(contactId, {
+        skip: !contactId,
+    });
+    const contact = data?.data?.contact;
+    // console.log(contact.firstName)
+
+
     return (
         <>
             <div className="grid grid-cols-1 lg:grid-cols-12 lg:gap-5 h-full">
@@ -59,15 +69,15 @@ const AddUSerInfo = () => {
 
                     <form>
                         <div className="grid md:grid-cols-2 gap-5 mt-10">
-                            <Input type="text" label="First Name" placeholder="Ben" />
-                            <Input type="text" label="Last Name" placeholder="Weisblatt" />
-                            <Input type="email" label="Email" placeholder="johnwick@mystateenergy.com" />
-                            <Input type="number" label="Phone Number" placeholder="(+1) 484 569 |" />
+                            <Input type="text" label="First Name" placeholder="Ben" value={contact?.firstName} />
+                            <Input type="text" label="Last Name" placeholder="Weisblatt" value={contact?.firstNameLowerCase} />
+                            <Input type="email" label="Email" placeholder="johnwick@mystateenergy.com" value={contact?.email} />
+                            <Input type="phone" label="Phone Number" placeholder="(+1) 484 569 |" value={contact?.phone} />
                             <div className="md:col-span-2">
-                                <Input type="Address" label="Phone Number" placeholder="Enter Address" />
+                                <Input type="Address" label="Address" placeholder="Enter Address" value={contact?.address1} />
                             </div>
-                            <Input type="number" label="Zip-code" placeholder="Enter Zip-code" />
-                            <Input type="number" label="City" placeholder="e.g New York" />
+                            <Input type="number" label="Zip-code" placeholder="Enter Zip-code" value={contact?.postalCode} />
+                            <Input type="text" label="City" placeholder="e.g New York" value={contact?.city} />
                         </div>
                     </form>
                 </div>

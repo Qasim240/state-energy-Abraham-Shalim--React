@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import {
     addmoreIcon, arrowUpIcon, arrowDownIcon, deleteIcon, doorIcon,
-    infoCircleIcon, orderSpec,
+    infoCircleIcon, orderSpec
 } from '../../../../imagesPath';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { useAddToCartMutation, useGetCategoriesQuery } from '../../../features/api/apiSlice';
+import {
+    useAddToCartMutation,
+    useEditCartItemMutation,
+    useGetCategoriesQuery
+} from '../../../features/api/apiSlice';
 import { toast } from 'react-toastify';
+
 import {
     setWindowSelection,
     addToCart,
@@ -23,19 +28,26 @@ import Counter from '../../utils/Counter';
 import AddToCardWedget from '../../utils/AddToCardWedget';
 import VerticalSeparator from '../../utils/VerticalSeparator';
 import BackBtn from '../../utils/BackBtn';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import * as yup from 'yup';
 
 const Windows = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { cartId } = useParams();
+    const isEditMode = !!cartId;
+
     const { data, isLoading } = useGetCategoriesQuery();
     const [addToCartApi, { isLoading: isAdding }] = useAddToCartMutation();
+    const [editCartItemApi] = useEditCartItemMutation();
 
     const categories = data?.data?.categories || [];
     const windowCategory = categories.find(cat => cat.name?.toLowerCase() === 'windows');
     const fields = windowCategory?.configuration?.fields || [];
 
     const savedSelection = useSelector((state) => state.user.windowSelection || []);
+
     const [windowList, setWindowList] = useState(
         savedSelection.length
             ? savedSelection.map(w => ({ ...w, errors: {}, isOpen: true }))
@@ -59,7 +71,6 @@ const Windows = () => {
     const frameColorOptions = fields.find(f => f.name === 'frame_color')?.options || [];
     const sliderBanner = windowCategory?.detail_photo_url ? [windowCategory.detail_photo_url] : [];
 
-    // Redux sync
     useEffect(() => {
         dispatch(setWindowSelection(windowList));
     }, [windowList, dispatch]);
@@ -103,14 +114,14 @@ const Windows = () => {
         );
     };
 
-    const handleAddToCart = async () => {
+    const handleAddOrUpdate = async () => {
         const schema = yup.object().shape({
-            height: yup.number().typeError('Height must be a number').required('Height is required').positive(),
-            width: yup.number().typeError('Width must be a number').required('Width is required').positive(),
+            height: yup.number().typeError('Height must be a number').required('Required').positive(),
+            width: yup.number().typeError('Width must be a number').required('Required').positive(),
             type: yup.string().required('Type is required'),
             frameColor: yup.string().required('Frame Color is required'),
             tintColor: yup.string().required('Tint Color is required'),
-            qty: yup.number().typeError('Quantity must be a number').required('Quantity is required').min(1),
+            qty: yup.number().typeError('Quantity must be a number').required().min(1),
         });
 
         let allValid = true;
@@ -129,36 +140,42 @@ const Windows = () => {
         }));
 
         setWindowList(newList);
+        if (!allValid) return toast.error('Please fix validation errors');
 
-        if (!allValid) {
-            toast.error('Please fix validation errors');
-            return;
-        }
+        const configWindows = newList.map(({ height, width, type, frameColor, tintColor, qty }) => ({
+            height,
+            width,
+            type,
+            frame_color: frameColor,
+            tint_color: tintColor,
+            qty
+        }));
 
         const payload = {
-            id: newList[0].id, // use first window's ID for cart tracking
             category_id: windowCategory.id,
             configuration: {
-                windows: newList.map(({ height, width, type, frameColor, tintColor, qty }) => ({
-                    height,
-                    width,
-                    type,
-                    frameColor,
-                    tintColor,
-                    quantity: qty
-                }))
+                windows: configWindows
             },
-            adders: []
+            configuration_meta: {
+                fields
+            },
+            pricing_meta: windowCategory.pricing || {},
+            adders: [],
+            price: 5000
         };
 
         try {
-            const response = await addToCartApi(payload).unwrap();
+            const response = isEditMode
+                ? await editCartItemApi({ cartId, updatedData: payload }).unwrap()
+                : await addToCartApi(payload).unwrap();
+
             if (response.success) {
-                dispatch(addToCart({ ...payload, ...response.data.cart }));
-                toast.success('Windows added to cart!');
+                dispatch(addToCart(response.data.cart));
+                toast.success(isEditMode ? 'Windows updated!' : 'Windows added to cart!');
+                if (isEditMode) navigate('/cart-details');
             }
         } catch (err) {
-            toast.error(err?.data?.message || 'Failed to add to cart');
+            toast.error(err?.data?.message || 'Failed to submit');
         }
     };
 
@@ -167,7 +184,7 @@ const Windows = () => {
     }
 
     if (!windowCategory) {
-        return <p className="text-center mt-10 text-red-500">Window category not found in API response.</p>;
+        return <p className="text-center mt-10 text-red-500">Window category not found.</p>;
     }
 
     return (
@@ -180,7 +197,12 @@ const Windows = () => {
             <div className="col-span-12 md:col-span-8 flex flex-col min-h-full mt-4">
                 <div className="flex flex-col flex-grow">
                     <div className="flex justify-between items-center">
-                        <IconHeading className="lg:text-[16px] text-[12px]" primaryIcon={orderSpec} headingText="Order Specifications" secondaryIcon={infoCircleIcon} />
+                        <IconHeading
+                            className="lg:text-[16px] text-[12px]"
+                            primaryIcon={orderSpec}
+                            headingText="Order Specifications"
+                            secondaryIcon={infoCircleIcon}
+                        />
                         <PrimaryBtn className="bg-transparent px-[0px] py-[0px]" iconLeft={addmoreIcon} onClick={handleAddWindow}>
                             <span className="text-base-dark lg:text-[16px] text-[12px]">Add window</span>
                         </PrimaryBtn>
@@ -188,11 +210,7 @@ const Windows = () => {
 
                     {windowList.length === 0 ? (
                         <p className="text-gray-500 italic mt-6">Please add a window to continue.</p>
-
-                    ) :
-
-
-
+                    ) : (
                         windowList.map((item, index) => (
                             <div key={item.id} className="border border-secondary rounded-large p-[15px] large mt-6">
                                 <div className="flex justify-between items-center">
@@ -256,18 +274,13 @@ const Windows = () => {
                                 )}
                             </div>
                         ))
-
-
-                    }
-
-
-
+                    )}
 
                     <AddToCardWedget
                         totalPrice="5000"
-                        className="sticky bottom-0"
-                        onAddToCart={handleAddToCart}
+                        onAddToCart={handleAddOrUpdate}
                         isLoading={isAdding}
+                        isEditMode={isEditMode}
                     />
                 </div>
             </div>
