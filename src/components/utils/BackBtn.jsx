@@ -8,7 +8,7 @@ const BackBtn = ({ link, className = '' }) => {
     return (
         <Link to={link}>
             <PrimaryBtn className={`px-2 py-1 bg-transparent ${className}`} >
-                <Image img={backArrow} />
+                <Image className='h-[20px]' img={backArrow} />
             </PrimaryBtn>
         </Link>
     )

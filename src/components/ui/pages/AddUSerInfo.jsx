@@ -11,8 +11,6 @@ import { useGetCrmContactQuery } from '../../../features/api/apiSlice';
 
 const AddUSerInfo = () => {
 
-
-
     const contactId = useSelector(state => state.user.selectedAppointment.contactId);
 
     const { data, isLoading, isError } = useGetCrmContactQuery(contactId, {

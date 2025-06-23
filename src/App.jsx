@@ -45,14 +45,14 @@ function App() {
       </Routes>
 
       <ToastContainer
-        position="top-right"
+
+        position="bottom-right"
         autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick={false}
         rtl={false}
         draggable
-
         theme="light"
       />
     </>
@@ -60,3 +60,4 @@ function App() {
 }
 
 export default App;
+

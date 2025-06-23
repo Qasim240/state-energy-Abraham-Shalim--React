@@ -77,19 +77,8 @@ const LoanFinance = () => {
     <div className="grid md:grid-cols-12 grid-cols-1 lg:gap-5 h-screen md:overflow-hidden">
       <div className="md:col-span-8 pr-2">
         <div className="flex justify-between items-center">
-          <nav className="flex py-3 text-gray-700" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-              <li className="inline-flex items-center"><span className="font-medium text-sm text-base-50">Cart Items</span></li>
-              <li className="inline-flex items-center"><span className="font-medium text-sm text-base-50">Customer Info</span></li>
-              <li aria-current="page">
-                <div className="flex items-center">
-                  <svg width="8" height="8" fill="#D9D9D9"><circle cx="4" cy="4" r="4" /></svg>
-                  <span className="ms-1 text-sm font-medium md:ms-2 text-base">Loan Finance</span>
-                </div>
-              </li>
-            </ol>
-          </nav>
-          <PrimaryBtn className="bg-transparent px-[0] py-[0]">
+
+          <PrimaryBtn className="bg-transparent px-[0] py-[0] ms-auto">
             <span className="underline text-base-red text-[14px]">Skip</span>
           </PrimaryBtn>
         </div>

@@ -60,7 +60,7 @@ const Login = () => {
             {/* <p>{user?.name}</p> */}
 
             <div className="min-h-screen grid grid-cols-1 md:grid-cols-8 gap-10">
-                <div className="hidden md:flex md:col-span-4 items-center justify-end">
+                <div className="hidden md:flex md:col-span-4 items-center justify-end p-4">
                     <img src={loginBanner} alt="Login Banner" />
                 </div>
 

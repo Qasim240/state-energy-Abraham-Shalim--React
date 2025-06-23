@@ -7,6 +7,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { transformCartItem } from '../../utils/transformCartItem';
+import CartLoader from '../../utils/CartLoader.jsx';
 
 import {
     useGetCartQuery,
@@ -21,6 +22,7 @@ import {
 } from '../../../features/slices/userSlice.js';
 
 import { fontMedium } from '../../utils/fontMedium';
+import LongBarSkeltion from '../../utils/longBarSkeltion.jsx';
 
 const CartDetails = () => {
     const dispatch = useDispatch();
@@ -28,6 +30,7 @@ const CartDetails = () => {
     const location = useLocation();
 
     const { data, isLoading, isError, refetch } = useGetCartQuery();
+
     const [deleteCartItem] = useDeleteCartItemMutation();
     const [clearCartApi] = useClearCartApiMutation();
 
@@ -68,7 +71,6 @@ const CartDetails = () => {
         transformCartItem(item)
     );
 
-    // ✅ Detect edit mode (from route param or state if needed)
     const isEditPage = location.pathname.includes('/collection/') && location.pathname.split('/').length === 4;
 
     return (
@@ -77,10 +79,32 @@ const CartDetails = () => {
                 <div className="px-0 py-4">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-                            <span className={`text-[14px] text-base-50 ${fontMedium}`}>All Items</span>
-                            <span className="bg-base rounded-full h-[24px] w-[24px] flex justify-center items-center text-[12px] bg-base-dark text-white font-Avenir font-extrabold">
-                                {isLoading ? '...' : transformedItems.length}
-                            </span>
+
+
+
+
+                            {
+                                isLoading ?
+                                    <div role="status" class="max-w-sm animate-pulse">
+                                        <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-10 mb-4"></div>
+                                    </div> :
+                                    <>
+                                        <span className={`text-[14px] text-base-50  ${fontMedium}`}>All Items</span>
+                                        <span className="bg-base rounded-md h-[20px] w-[24px] flex justify-center items-center text-[12px] bg-base-dark text-white font-Avenir font-extrabold">
+                                            {transformedItems.length}
+                                        </span>
+                                    </>
+                            }
+
+
+
+
+
+
+
+
+
+
                         </div>
                         <PrimaryBtn onClick={handleClearAll} className="bg-transparent px-[0] py-[0]">
                             <span className="text-base-red underline text-[14px]">Clear all</span>
@@ -95,7 +119,7 @@ const CartDetails = () => {
                 </div>
 
                 {isLoading ? (
-                    <p className="text-center text-gray-500 mt-8">Loading cart...</p>
+                    <CartLoader count={items?.length || 3} />
                 ) : isError ? (
                     <p className="text-center text-red-500 mt-8">Failed to load cart.</p>
                 ) : transformedItems.length === 0 ? (

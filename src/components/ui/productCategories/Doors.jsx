@@ -28,6 +28,7 @@ import BackBtn from '../../utils/BackBtn';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const Doors = () => {
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartId } = useParams();
@@ -36,7 +37,7 @@ const Doors = () => {
   const categories = useSelector(state => state.user.categories || []);
 
 
-  
+
   const doorCategory = categories.find(cat => cat.name?.toLowerCase() === 'doors');
   const fields = doorCategory?.configuration?.fields || [];
   const pricing = doorCategory?.pricing || {};
@@ -134,9 +135,9 @@ const Doors = () => {
           height: Number(d.height),
           width: Number(d.width),
           type: d.type,
-          frameColor: d.frameColor,
-          tintColor: d.tintColor,
-          quantity: Number(d.qty),
+          frame_color: d.frameColor,
+          tint_color: d.tintColor,
+          qty: Number(d.qty),
         }))
       },
       configuration_meta: { fields },

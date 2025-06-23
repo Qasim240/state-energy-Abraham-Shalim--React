@@ -12,7 +12,7 @@ export default {
       colors: {
         primary: '#03276B',
         secondary: '#DEDEDE',
-    
+
         'base-50': 'rgba(30, 30, 30, 0.5)',
         'grey-light': "#B3B3B3",
         "base-red": '#C52F31',
@@ -35,9 +35,21 @@ export default {
       backgroundImage: {
         'gray-flat': 'linear-gradient(211.26deg, #DEDEDE -239.13%, rgba(222, 222, 222, 0) 69.97%)',
         'blue-flat': 'linear-gradient(200.57deg, #C1D8F7 -152.32%, #FFFFFF 54.74%)',
-   
-
       },
+
+      keyframes: {
+        shimmer: {
+          '0%': { transform: 'translateX(-100%)' },
+          '100%': { transform: 'translateX(100%)' }
+        }
+      },
+
+   
+      animation: {
+        shimmer: 'shimmer 1.5s infinite',
+      }
+
+
 
     },
     container: {
