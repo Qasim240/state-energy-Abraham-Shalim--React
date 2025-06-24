@@ -11,7 +11,7 @@ export const apiSlice = createApi({
             const token = user ? user.token : null;
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`);
-                console.log('Token is inside apiSlice.js', token);
+                // console.log('Token is inside apiSlice.js', token);
             }
             return headers;
         },
@@ -82,7 +82,7 @@ export const apiSlice = createApi({
         clearCartApi: builder.mutation({
             query: () => ({
                 url: `/userCart/clear-cart`,
-                method: 'DELETE',
+                method: 'GET',
             }),
         }),
 

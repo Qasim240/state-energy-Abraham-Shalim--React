@@ -16,7 +16,6 @@ const CollectionCard = ({ title, slug, thumbnailImg }) => {
                     alt="Collection"
                 />
 
-
                 <PrimaryBtn className='py-3 px-4 sm:py-4 sm:px-5 absolute right-[-16px] sm:right-[-22px] bottom-0 bg-base-dark text-[24px] sm:text-[30px] rounded-none rounded-tl-[16px] flex items-center'>
                     <img className='mr-2 sm:mr-4 w-[16px] sm:w-[20px]' src={addIcon} alt={addIcon} />
                 </PrimaryBtn>

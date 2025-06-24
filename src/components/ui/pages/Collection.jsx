@@ -19,15 +19,7 @@ const Collection = () => {
         }
     }, [categories, dispatch]);
 
-    // if (isLoading) {
-    //     return (
-    //         <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
-    //             {Array.from({ length: 8 }).map((_, idx) => (
-    //                 <CollectionCardSkeleton key={idx} />
-    //             ))}
-    //         </div>
-    //     );
-    // }
+
 
     if (isError) {
         return <p className="text-center py-10 text-red-500">Failed to load categories</p>;

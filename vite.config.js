@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react(), flowbiteReact()],
   server: {
     allowedHosts: [
-      '3e88-39-37-159-122.ngrok-free.app'
+      'e66e-39-37-143-62.ngrok-free.app'
     ],
   },
 })

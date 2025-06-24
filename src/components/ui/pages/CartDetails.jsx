@@ -8,32 +8,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { transformCartItem } from '../../utils/transformCartItem';
 import CartLoader from '../../utils/CartLoader.jsx';
-
-import {
-    useGetCartQuery,
-    useDeleteCartItemMutation,
-    useClearCartApiMutation,
-} from '../../../features/api/apiSlice';
-
-import {
-    setCart,
-    removeCartItem,
-    clearCart,
-} from '../../../features/slices/userSlice.js';
-
+import { useGetCartQuery, useDeleteCartItemMutation, useClearCartApiMutation, } from '../../../features/api/apiSlice';
+import { setCart, removeCartItem, clearCart, } from '../../../features/slices/userSlice.js';
 import { fontMedium } from '../../utils/fontMedium';
-import LongBarSkeltion from '../../utils/longBarSkeltion.jsx';
+import ConfirmDialog from '../../ConfirmDialog.jsx';
 
 const CartDetails = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
-
     const { data, isLoading, isError, refetch } = useGetCartQuery();
-
     const [deleteCartItem] = useDeleteCartItemMutation();
     const [clearCartApi] = useClearCartApiMutation();
-
+    const [confirmDialog, setConfirmDialog] = React.useState(null);
     const items = useSelector((state) => state.user.cart);
 
     useEffect(() => {
@@ -42,29 +29,45 @@ const CartDetails = () => {
         }
     }, [data, dispatch]);
 
-    const handleDelete = async (id) => {
-        if (!window.confirm('Are you sure you want to delete this item?')) return;
-        dispatch(removeCartItem(id));
-        try {
-            await deleteCartItem(id).unwrap();
-            toast.success('Item removed.');
-        } catch {
-            toast.error('Failed to delete. Syncing back.');
-            refetch();
-        }
+
+
+    const handleDelete = (id) => {
+        setConfirmDialog({
+            title: 'Remove Item',
+            message: 'Are you sure you want to delete this item?',
+            onConfirm: async () => {
+                setConfirmDialog(null);
+                dispatch(removeCartItem(id));
+                try {
+                    await deleteCartItem(id).unwrap();
+                    toast.success('Item removed.');
+                } catch {
+                    toast.error('Failed to delete. Syncing back.');
+                    refetch();
+                }
+            },
+        });
     };
 
-    const handleClearAll = async () => {
-        if (!window.confirm('Clear all items?')) return;
-        dispatch(clearCart());
-        try {
-            const res = await clearCartApi().unwrap();
-            if (res?.success === false) return toast.warn(res.message);
-            toast.success('Cart cleared.');
-        } catch {
-            toast.error('Clear failed. Refetching.');
-            refetch();
-        }
+
+
+    const handleClearAll = () => {
+        setConfirmDialog({
+            title: 'Clear Cart',
+            message: 'Do you really want to clear all items from the cart?',
+            onConfirm: async () => {
+                setConfirmDialog(null);
+                dispatch(clearCart());
+                try {
+                    const res = await clearCartApi().unwrap();
+                    if (res?.success === false) return toast.warn(res.message);
+                    toast.success('Cart cleared.');
+                } catch {
+                    toast.error('Clear failed. Refetching.');
+                    refetch();
+                }
+            },
+        });
     };
 
     const transformedItems = items.map((item) =>
@@ -79,10 +82,6 @@ const CartDetails = () => {
                 <div className="px-0 py-4">
                     <div className="flex justify-between items-center">
                         <div className="flex items-center gap-3">
-
-
-
-
                             {
                                 isLoading ?
                                     <div role="status" class="max-w-sm animate-pulse">
@@ -95,16 +94,6 @@ const CartDetails = () => {
                                         </span>
                                     </>
                             }
-
-
-
-
-
-
-
-
-
-
                         </div>
                         <PrimaryBtn onClick={handleClearAll} className="bg-transparent px-[0] py-[0]">
                             <span className="text-base-red underline text-[14px]">Clear all</span>
@@ -157,6 +146,14 @@ const CartDetails = () => {
                     </div>
                 </div>
             </div>
+            {confirmDialog && (
+                <ConfirmDialog
+                    title={confirmDialog.title}
+                    message={confirmDialog.message}
+                    onConfirm={confirmDialog.onConfirm}
+                    onCancel={() => setConfirmDialog(null)}
+                />
+            )}
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Image from '../../utils/Image';
-import { loginBanner, logo } from '../../../../imagesPath';
+import { loginBanner } from '../../../../imagesPath';
 import { useGetAppointmentsQuery } from '../../../features/api/apiSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';

@@ -9,16 +9,12 @@ import BackBtn from '../../utils/BackBtn'
 
 const Home = () => {
     const selectedAppointment = useSelector((state) => state.user.selectedAppointment);
-    console.log("selectedAppointment", selectedAppointment)
 
-    useEffect(() => {
-        console.log('Selected Appointment:', selectedAppointment);
-    }, [selectedAppointment]);
 
     return (
         <>
             <BackBtn link='/select-appointment' />
-            
+
             <div className='text-center mt-10'>
                 <span className='text-base-red bg-base-red-200 font-Avenir font-medium px-4 py-3 rounded-[12px] text-[14px] '>
                     Utilization Details
