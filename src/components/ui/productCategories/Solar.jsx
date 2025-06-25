@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import {
-  categoryIcon,
-  infoCircleIcon,
-  orderSpec,
-} from '../../../../imagesPath';
+import { orderSpec, infoCircleIcon } from '../../../../imagesPath';
 import Input from '../Input';
 import IconHeading from '../../utils/IconHeading';
 import AdderSelector from '../../utils/AdderSelector';
@@ -21,16 +17,18 @@ import {
 } from '../../../features/api/apiSlice.js';
 import { addToCart, setSolarSelection } from '../../../features/slices/userSlice.js';
 import { toast } from 'react-toastify';
+import Dropdown from '../Dropdown.jsx';
 
 const Solar = () => {
+  /* ───────── hooks & store ───────── */
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { cartId } = useParams();
   const isEditMode = !!cartId;
 
-  const savedSolar = useSelector((state) => state.user.solarSelection || {});
-  const categories = useSelector((state) => state.user.categories || []);
-  const solarData = categories.find((cat) => cat.name.toLowerCase() === 'solar');
+  const savedSolar = useSelector((s) => s.user.solarSelection || {});
+  const categories = useSelector((s) => s.user.categories || []);
+  const solarData = categories.find((c) => c.name.toLowerCase() === 'solar');
 
   const [addToCartApi, { isLoading }] = useAddToCartMutation();
   const [editCartItemApi] = useEditCartItemMutation();
@@ -42,80 +40,112 @@ const Solar = () => {
 
   const adders = solarData.adders.map((a) => a.name);
   const fields = solarData.configuration.fields;
-  const getFieldLabel = (name) => fields.find((f) => f.name === name)?.label || name;
 
+  const getField = (name) => fields.find((f) => f.name === name) || {};
+  const getFieldLabel = (name) => getField(name).label || name;
+  const getFieldUnit = (name) => getField(name).unit || undefined;
+
+  /* ───────── form ───────── */
   const schema = yup.object().shape({
-    panelAmount: yup.number().typeError('Must be a number').positive().required('Required'),
-    panelSize: yup.number().typeError('Must be a number').positive().required('Required'),
-    totalKW: yup.number().typeError('Must be a number').positive().required('Required'),
-    batteryCapacity: yup
-      .number()
-      .typeError('Must be a number')
-      .when([], {
-        is: () => includeBattery,
-        then: (schema) => schema.required('Required').positive(),
-        otherwise: (schema) => schema.notRequired(),
-      }),
-    inverterCapacity: yup
-      .number()
-      .typeError('Must be a number')
-      .when([], {
-        is: () => includeBattery,
-        then: (schema) => schema.required('Required').positive(),
-        otherwise: (schema) => schema.notRequired(),
-      }),
+    panelAmount: yup.number().typeError('Must be a number').positive().required(),
+    panelSize: yup.number().typeError('Must be a number').positive().required(),
+    batteryType: yup.string().when([], {
+      is: () => includeBattery,
+      then: (s) => s.required('Please select a battery'),
+      otherwise: (s) => s.notRequired(),
+    }),
   });
 
   const {
     control,
     handleSubmit,
-    formState: { errors },
+    setValue,
     watch,
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      panelAmount: savedSolar.panelAmount || '',
-      panelSize: savedSolar.panelSize || '',
-      totalKW: savedSolar.totalKW || '',
-      batteryCapacity: savedSolar.batteryCapacity || '',
-      inverterCapacity: savedSolar.inverterCapacity || '',
+      panelAmount: savedSolar.panelAmount ?? '',
+      panelSize: savedSolar.panelSize ?? '',
+      totalKW: savedSolar.totalKW ?? '',
+      batteryType: savedSolar.batteryType ?? '',
     },
   });
 
   const panelAmount = watch('panelAmount');
   const panelSize = watch('panelSize');
-  const totalKW = watch('totalKW');
-  const batteryCapacity = watch('batteryCapacity');
-  const inverterCapacity = watch('inverterCapacity');
+  const batteryType = watch('batteryType');
 
+  /* ───────── calculations ───────── */
+  const totalSystemWatts = useMemo(() => {
+    const amt = +panelAmount || 0;
+    const size = +panelSize || 0;
+    return amt * size;
+  }, [panelAmount, panelSize]);
+
+  const totalSystemKW = useMemo(() => (totalSystemWatts / 1000).toFixed(2), [totalSystemWatts]);
+
+  useEffect(() => {
+    setValue('totalKW', totalSystemKW);
+  }, [totalSystemKW, setValue]);
+
+  /* Price per watt: always available from the first pricing entry */
+  const pricePerWatt = useMemo(() => {
+    if (batteryType && solarData.pricing[batteryType])
+      return +solarData.pricing[batteryType].price_per_sqft;
+
+    const firstKey = Object.keys(solarData.pricing)[0];
+    return firstKey ? +solarData.pricing[firstKey].price_per_sqft : 0;
+  }, [batteryType, solarData]);
+
+  /* Battery price only if selected */
+  const batteryPrice = useMemo(() => {
+    if (!includeBattery || !batteryType) return 0;
+    return +solarData.pricing[batteryType]?.price_per_sqft || 0;
+  }, [includeBattery, batteryType, solarData]);
+
+  /* Adders */
+  const addersCost = useMemo(() => {
+    return selectedAdders.reduce((sum, name) => {
+      const a = solarData.adders.find((ad) => ad.name === name);
+      if (!a) return sum;
+      const unitPrice = +a.price;
+      return sum + (a.type === 'dynamic' ? totalSystemWatts * unitPrice : unitPrice);
+    }, 0);
+  }, [selectedAdders, solarData, totalSystemWatts]);
+
+  const subtotal = totalSystemWatts * pricePerWatt;
+  const grandTotal = subtotal + batteryPrice + addersCost;
+
+  /* ───────── sync with Redux ───────── */
   useEffect(() => {
     dispatch(
       setSolarSelection({
         panelAmount,
         panelSize,
-        totalKW,
+        totalKW: totalSystemKW,
         includeBattery,
-        batteryCapacity,
-        inverterCapacity,
+        batteryType,
         adders: selectedAdders,
-      })
+        price: grandTotal,
+      }),
     );
   }, [
     panelAmount,
     panelSize,
-    totalKW,
+    totalSystemKW,
     includeBattery,
-    batteryCapacity,
-    inverterCapacity,
+    batteryType,
     selectedAdders,
+    grandTotal,
     dispatch,
   ]);
 
-  const toggleAdder = (adder) => {
+  /* ───────── handlers ───────── */
+  const toggleAdder = (adder) =>
     setSelectedAdders((prev) =>
-      prev.includes(adder) ? prev.filter((a) => a !== adder) : [...prev, adder]
+      prev.includes(adder) ? prev.filter((a) => a !== adder) : [...prev, adder],
     );
-  };
 
   const BatteryChangeHandler = () => setIncludeBattery((prev) => !prev);
 
@@ -123,37 +153,30 @@ const Solar = () => {
     const configuration = {
       number_of_panels: data.panelAmount,
       panel_size: data.panelSize,
-      total_kw: data.totalKW,
+      total_kw: totalSystemKW,
       battery_backup: includeBattery,
-      battery_capacity: includeBattery ? data.batteryCapacity : undefined,
-      inverter_capacity: includeBattery ? data.inverterCapacity : undefined,
+      battery: data.batteryType,
     };
 
     const payload = {
       category_id: solarData.id,
       configuration,
-      configuration_meta: {
-        fields,
-      },
+      configuration_meta: { fields },
       pricing_meta: solarData.pricing || {},
-      adders: selectedAdders.map((name) => {
-        const found = solarData.adders.find((a) => a.name === name);
-        return {
-          id: found.id,
-          name: found.name,
-          price: found.price.toString(),
-        };
+      adders: selectedAdders.map((n) => {
+        const a = solarData.adders.find((x) => x.name === n);
+        return { id: a.id, name: a.name, price: a.price.toString() };
       }),
-      price: 200, // temp price
+      price: grandTotal,
     };
 
     try {
-      const response = isEditMode
+      const res = isEditMode
         ? await editCartItemApi({ cartId, updatedData: payload }).unwrap()
         : await addToCartApi(payload).unwrap();
 
-      if (response.success) {
-        dispatch(addToCart(response.data.cart));
+      if (res.success) {
+        dispatch(addToCart(res.data.cart));
         toast.success(isEditMode ? 'Cart item updated!' : 'Added to cart!');
         if (isEditMode) navigate('/cart-details');
       }
@@ -162,6 +185,7 @@ const Solar = () => {
     }
   };
 
+  /* ───────── UI ───────── */
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-12 md:col-span-4 hidden md:block">
@@ -178,6 +202,7 @@ const Solar = () => {
           />
 
           <form>
+            {/* Panels */}
             <div className="grid md:grid-cols-12 gap-4 mt-6">
               <div className="col-span-6">
                 <Controller
@@ -187,7 +212,8 @@ const Solar = () => {
                     <Input
                       {...field}
                       type="number"
-                      label={getFieldLabel('panel_amount')}
+                      label={getFieldLabel('number_of_panels')}
+                      unit={getFieldUnit('number_of_panels')}
                       placeholder="0"
                       error={errors.panelAmount?.message}
                     />
@@ -202,7 +228,7 @@ const Solar = () => {
                     <Input
                       {...field}
                       type="number"
-                      unit="w"
+                      unit={getFieldUnit('panel_size')}        
                       label={getFieldLabel('panel_size')}
                       placeholder="0"
                       error={errors.panelSize?.message}
@@ -212,6 +238,7 @@ const Solar = () => {
               </div>
             </div>
 
+            {/* Computed kW */}
             <div className="grid md:grid-cols-12 gap-4 mt-3">
               <div className="col-span-12">
                 <Controller
@@ -220,17 +247,18 @@ const Solar = () => {
                   render={({ field }) => (
                     <Input
                       {...field}
+                      value={totalSystemKW}
+                      readOnly
                       type="number"
-                      unit="KW"
-                      label={getFieldLabel('total_kw')}
-                      placeholder="0"
-                      error={errors.totalKW?.message}
+                      unit={getFieldUnit('total_kw') || 'W'}
+                      label={getFieldLabel('Total System Size')}
                     />
                   )}
                 />
               </div>
             </div>
 
+            {/* Battery toggle + dropdown */}
             <div className="mt-3">
               <label className="inline-flex items-center cursor-pointer mb-3">
                 <input
@@ -246,34 +274,24 @@ const Solar = () => {
 
             {includeBattery && (
               <div className="grid md:grid-cols-12 gap-4 mt-3">
-                <div className="col-span-6">
+                <div className="col-span-12">
                   <Controller
-                    name="batteryCapacity"
+                    name="batteryType"
                     control={control}
                     render={({ field }) => (
-                      <Input
+                      <Dropdown
                         {...field}
-                        type="number"
-                        unit="KW"
-                        label="Battery Capacity"
-                        placeholder="0"
-                        error={errors.batteryCapacity?.message}
-                      />
-                    )}
-                  />
-                </div>
-                <div className="col-span-6">
-                  <Controller
-                    name="inverterCapacity"
-                    control={control}
-                    render={({ field }) => (
-                      <Input
-                        {...field}
-                        type="number"
-                        unit="KW"
-                        label="Inverter Capacity"
-                        placeholder="0"
-                        error={errors.inverterCapacity?.message}
+                        label="Select Battery"
+
+                        options={[
+                          { value: '', label: '— None —' },
+                          ...(getField('battery').options || []).map((o) => ({
+                            value: o,
+                            label: o,
+                          })),
+                        ]}
+                        placeholder="Choose..."
+                        error={errors.batteryType?.message}
                       />
                     )}
                   />
@@ -281,6 +299,7 @@ const Solar = () => {
               </div>
             )}
 
+            {/* Adders */}
             <div className="mt-5">
               <IconHeading headingText="Adders" secondaryIcon={infoCircleIcon} />
               <AdderSelector
@@ -292,8 +311,9 @@ const Solar = () => {
           </form>
         </div>
 
+        {/* Price widget */}
         <AddToCardWedget
-          totalPrice="200"
+          totalPrice={grandTotal.toLocaleString()}
           onAddToCart={handleSubmit(handleAddOrUpdate)}
           isLoading={isLoading}
           isEditMode={isEditMode}

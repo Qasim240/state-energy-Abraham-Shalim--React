@@ -3,84 +3,21 @@
     "data": {
         "categories": [
             {
-                "id": 41,
-                "name": "Roof",
-                "thumbnail": "category/roof-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/roof-thumb.png",
-                "detail_photo": "category/roof-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/roof-detail.png",
-                "pricing": {
-                    "Shingle": {
-                        "price_per_sqft": "1375.00"
-                    },
-                    "Flat": {
-                        "price_per_sqft": "1500.00"
-                    },
-                    "Metal": {
-                        "price_per_sqft": "2625.00"
-                    },
-                    "Tile": {
-                        "price_per_sqft": "2750.00"
-                    }
-                },
-                "configuration": {
-                    "fields": [
-                        {
-                            "label": "Choose Category",
-                            "type": "select",
-                            "options": [
-                                "Shingle",
-                                "Flat",
-                                "Metal",
-                                "Tile"
-                            ],
-                            "pricing": "true",
-                            "name": "category"
-                        },
-                        {
-                            "label": "Square Footage",
-                            "type": "number",
-                            "unit": "sqft",
-                            "name": "square_footage"
-                        },
-                        {
-                            "label": "Color",
-                            "type": "select",
-                            "options": [
-                                "Red",
-                                "Grey",
-                                "Black"
-                            ],
-                            "name": "color",
-                            "pricing": "false"
-                        }
-                    ]
-                },
-                "adders": [
-                    {
-                        "id": 82,
-                        "name": "Fascia",
-                        "price": "350.00"
-                    },
-                    {
-                        "id": 83,
-                        "name": "Rain Gutters",
-                        "price": "350.00"
-                    }
-                ]
-            },
-            {
-                "id": 42,
+                "id": 58,
                 "name": "Solar",
-                "thumbnail": "category/solar-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/solar-thumb.png",
-                "detail_photo": "category/solar-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/solar-detail.png",
+                "thumbnail": "category\/solar-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/solar-thumb.png",
+                "detail_photo": "category\/solar-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/solar-detail.png",
                 "pricing": {
-                    "price_per_watt": "0.80",
-                    "battery": {
-                        "5.8 kilowatt": "4500.00",
-                        "7.6 kilowatt": "5500.00"
+                    "5.8 kilowatt": {
+                        "price_per_sqft": "4500.00"
+                    },
+                    "7.6 kilowatt": {
+                        "price_per_sqft": "5500.00"
+                    },
+                    "15.8 kilowatt": {
+                        "price_per_sqft": "5500.00"
                     }
                 },
                 "configuration": {
@@ -107,7 +44,8 @@
                             "type": "select",
                             "options": [
                                 "5.8 kilowatt",
-                                "7.6 kilowatt"
+                                "7.6 kilowatt",
+                                "15.8 kilowatt"
                             ],
                             "name": "battery",
                             "pricing": "true"
@@ -116,34 +54,46 @@
                 },
                 "adders": [
                     {
-                        "id": 78,
+                        "id": 157,
                         "name": "MPU",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "350.00"
                     },
                     {
-                        "id": 79,
+                        "id": 158,
                         "name": "Panel Box Relocation",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "350.00"
                     },
                     {
-                        "id": 80,
+                        "id": 159,
                         "name": "Sub-Panel",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "350.00"
                     },
                     {
-                        "id": 81,
+                        "id": 160,
                         "name": "Stucco Repair",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "350.00"
                     }
                 ]
             },
             {
-                "id": 43,
+                "id": 59,
                 "name": "HVAC",
-                "thumbnail": "category/hvac-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/hvac-thumb.png",
-                "detail_photo": "category/hvac-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/hvac-detail.png",
+                "thumbnail": "category\/hvac-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/hvac-thumb.png",
+                "detail_photo": "category\/hvac-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/hvac-detail.png",
                 "pricing": {
                     "Central": {
                         "1 TON": "7750.00",
@@ -152,13 +102,25 @@
                         "3 TON": "10000.00",
                         "3.5 TON": "10500.00",
                         "4 TON": "11250.00",
-                        "5 TON": "12000.00"
+                        "5 TON": "12000.00",
+                        "6 TON": "12000.00"
                     },
                     "Mini Split": {
                         "1 TON": "4500.00",
                         "1.5 TON": "4750.00",
                         "2 TON": "5750.00",
+                        "2.5 TON": "6250.00",
+                        "3.5 TON": "10500.00"
+                    },
+                    "Mini Split1323": {
+                        "1 TON": "4750.00",
                         "2.5 TON": "6250.00"
+                    },
+                    "main": {
+                        "main 2 ton": "123"
+                    },
+                    "first one": {
+                        "sub categor": "12"
                     }
                 },
                 "configuration": {
@@ -169,7 +131,10 @@
                             "name": "sub_category",
                             "options": [
                                 "Central",
-                                "Mini Split"
+                                "Mini Split",
+                                "Mini Split1323",
+                                "main",
+                                "first one"
                             ]
                         },
                         {
@@ -185,79 +150,115 @@
                                     "3 TON",
                                     "3.5 TON",
                                     "4 TON",
-                                    "5 TON"
+                                    "5 TON",
+                                    "6 TON"
                                 ],
                                 "Mini Split": [
                                     "1 TON",
                                     "1.5 TON",
                                     "2 TON",
+                                    "2.5 TON",
+                                    "3.5 TON"
+                                ],
+                                "Mini Split1323": [
+                                    "1 TON",
                                     "2.5 TON"
+                                ],
+                                "main": [
+                                    "main 2 ton"
+                                ],
+                                "first one": [
+                                    "sub categor"
                                 ]
                             },
-                            "pricing": "true"
+                            "pricing": "true",
+                            "depends_on": "sub_category"
                         }
                     ]
                 },
                 "adders": [
                     {
-                        "id": 69,
+                        "id": 148,
                         "name": "New Slub",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "500.00"
                     },
                     {
-                        "id": 70,
+                        "id": 149,
                         "name": "New Ducts",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "1250.00"
                     },
                     {
-                        "id": 71,
+                        "id": 150,
                         "name": "New Breaker",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "3125.00"
                     },
                     {
-                        "id": 72,
+                        "id": 151,
                         "name": "New Air Handler stand",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "325.00"
                     },
                     {
-                        "id": 73,
+                        "id": 152,
                         "name": "New Disconnect",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "450.00"
                     },
                     {
-                        "id": 74,
+                        "id": 153,
                         "name": "New Planum",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "625.00"
                     },
                     {
-                        "id": 75,
+                        "id": 154,
                         "name": "Smart Thermostat",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "375.00"
                     },
                     {
-                        "id": 76,
+                        "id": 155,
                         "name": "New Drain Line",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "1250.00"
                     },
                     {
-                        "id": 77,
+                        "id": 156,
                         "name": "New Copper Line",
+                        "type": "dynamic",
+                        "min_qty": 1,
+                        "max_qty": 1,
                         "price": "2500.00"
                     }
                 ]
             },
             {
-                "id": 44,
+                "id": 60,
                 "name": "Windows",
-                "thumbnail": "category/windows-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/windows-thumb.png",
-                "detail_photo": "category/windows-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/windows-detail.png",
-                "pricing": {
-                    "unit": "sqft",
-                    "formula": "(height * width) / 144",
-                    "price_per_sqft": "150.00"
-                },
+                "thumbnail": "category\/windows-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/windows-thumb.png",
+                "detail_photo": "category\/windows-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/windows-detail.png",
+                "pricing": [],
                 "configuration": {
                     "fields": [
                         {
@@ -277,7 +278,8 @@
                             "type": "select",
                             "options": [
                                 "Single Hung",
-                                "French"
+                                "French",
+                                "Frencheq43"
                             ],
                             "name": "type"
                         },
@@ -287,7 +289,8 @@
                             "options": [
                                 "White",
                                 "Brown",
-                                "Red"
+                                "Red",
+                                "Red2313"
                             ],
                             "name": "frame_color"
                         },
@@ -306,32 +309,13 @@
                 "adders": []
             },
             {
-                "id": 45,
+                "id": 61,
                 "name": "Doors",
-                "thumbnail": "category/doors-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/doors-thumb.png",
-                "detail_photo": "category/doors-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/doors-detail.png",
-                "pricing": {
-                    "Single Front Door": {
-                        "cost": "1750.00",
-                        "msrp": "3150.00",
-                        "min_price": "2625.00",
-                        "max_price": "4375.00"
-                    },
-                    "Double Front Door": {
-                        "cost": "3050.00",
-                        "msrp": "5490.00",
-                        "min_price": "4575.00",
-                        "max_price": "7625.00"
-                    },
-                    "Sliding Door": {
-                        "cost": "2850.00",
-                        "msrp": "5130.00",
-                        "min_price": "4275.00",
-                        "max_price": "7125.00"
-                    }
-                },
+                "thumbnail": "category\/doors-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/doors-thumb.png",
+                "detail_photo": "category\/doors-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/doors-detail.png",
+                "pricing": [],
                 "configuration": {
                     "fields": [
                         {
@@ -352,7 +336,8 @@
                             "options": [
                                 "Single Front Door",
                                 "Double Front Door",
-                                "Sliding Door"
+                                "Sliding Door",
+                                "rotaing door"
                             ],
                             "name": "type"
                         },
@@ -362,7 +347,8 @@
                             "options": [
                                 "White",
                                 "Brown",
-                                "Red"
+                                "Red",
+                                "White13213"
                             ],
                             "name": "frame_color"
                         },
@@ -381,17 +367,13 @@
                 "adders": []
             },
             {
-                "id": 46,
+                "id": 62,
                 "name": "Water Heater",
-                "thumbnail": "category/water-heater-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/water-heater-thumb.png",
-                "detail_photo": "category/water-heater-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/water-heater-detail.png",
-                "pricing": {
-                    "price_per_gallon": "12.00",
-                    "installation_fee": "200.00",
-                    "tankless_addon": "500.00"
-                },
+                "thumbnail": "category\/water-heater-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/water-heater-thumb.png",
+                "detail_photo": "category\/water-heater-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/water-heater-detail.png",
+                "pricing": [],
                 "configuration": {
                     "fields": [
                         {
@@ -399,7 +381,8 @@
                             "type": "select",
                             "options": [
                                 "Tank",
-                                "Tankless"
+                                "Tankless",
+                                "Shingle"
                             ],
                             "name": "type"
                         },
@@ -414,7 +397,8 @@
                             "type": "select",
                             "options": [
                                 "Standard",
-                                "High Efficiency"
+                                "High Efficiency",
+                                "pEfficiency"
                             ],
                             "name": "efficiency_rating"
                         },
@@ -428,20 +412,25 @@
                 "adders": []
             },
             {
-                "id": 47,
+                "id": 63,
                 "name": "Insulation",
-                "thumbnail": "category/insulation-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/insulation-thumb.png",
-                "detail_photo": "category/insulation-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/insulation-detail.png",
+                "thumbnail": "category\/insulation-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/insulation-thumb.png",
+                "detail_photo": "category\/insulation-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/insulation-detail.png",
                 "pricing": {
                     "Blown-in Insulation": {
                         "R-30": "7750.00",
-                        "R-38": "8500.00"
+                        "R-38": "8500.00",
+                        "R-39": "8500.00"
                     },
                     "Batt Insulation": {
                         "R-30": "750.00",
-                        "R-35": "800.00"
+                        "R-35": "800.00",
+                        "R-39": "8500.00"
+                    },
+                    "Blown-in Insulationrrr": {
+                        "R-35": "8500.00"
                     }
                 },
                 "configuration": {
@@ -452,7 +441,8 @@
                             "name": "sub_category",
                             "options": [
                                 "Blown-in Insulation",
-                                "Batt Insulation"
+                                "Batt Insulation",
+                                "Blown-in Insulationrrr"
                             ]
                         },
                         {
@@ -463,13 +453,19 @@
                             "options": {
                                 "Blown-in Insulation": [
                                     "R-30",
-                                    "R-38"
+                                    "R-38",
+                                    "R-39"
                                 ],
                                 "Batt Insulation": [
                                     "R-30",
+                                    "R-35",
+                                    "R-39"
+                                ],
+                                "Blown-in Insulationrrr": [
                                     "R-35"
                                 ]
                             },
+                            "depends_on": "sub_category",
                             "pricing": "true"
                         },
                         {
@@ -488,15 +484,13 @@
                 "adders": []
             },
             {
-                "id": 48,
+                "id": 64,
                 "name": "Other",
-                "thumbnail": "category/other-thumb.png",
-                "thumbnail_url": "http://192.168.100.131/state-energy/public/storage/category/other-thumb.png",
-                "detail_photo": "category/other-detail.png",
-                "detail_photo_url": "http://192.168.100.131/state-energy/public/storage/category/other-detail.png",
-                "pricing": {
-                    "total_price": "100.00"
-                },
+                "thumbnail": "category\/other-thumb.png",
+                "thumbnail_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/other-thumb.png",
+                "detail_photo": "category\/other-detail.png",
+                "detail_photo_url": "http:\/\/192.168.100.131\/state-energy\/public\/storage\/category\/other-detail.png",
+                "pricing": [],
                 "configuration": {
                     "fields": [
                         {

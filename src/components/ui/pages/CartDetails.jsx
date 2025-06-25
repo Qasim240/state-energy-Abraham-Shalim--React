@@ -50,7 +50,6 @@ const CartDetails = () => {
     };
 
 
-
     const handleClearAll = () => {
         setConfirmDialog({
             title: 'Clear Cart',

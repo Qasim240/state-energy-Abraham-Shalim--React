@@ -6,8 +6,17 @@ import VerticalSeparator from './VerticalSeparator'
 import PrimaryBtn from '../ui/PrimaryBtn'
 import { Link } from 'react-router-dom'
 import DividerCard from './DividerCard'
+import { useSelector } from 'react-redux'
 
 const EstimatedPriceCard = () => {
+
+
+    const utilityBills = useSelector(state => state.user.utilityBill)
+    const monthlyinsurance = useSelector(state => state.user.insuranceBill)
+
+
+
+    console.log("utilityBills from card", utilityBills)
     return (
         <>
 
@@ -20,7 +29,7 @@ const EstimatedPriceCard = () => {
                     <hr />
                 </div>
 
-                <DividerCard firstHeading="Monthly Utility Bill" firstInfo="123.45" secondheading="Monthly Insurance Bill" seondinfo="123.45" />
+                <DividerCard firstHeading="Monthly Utility Bill" firstInfo={utilityBills} secondheading="Monthly Insurance Bill" seondinfo={monthlyinsurance} />
 
             </div>
 
@@ -55,9 +64,9 @@ const EstimatedPriceCard = () => {
                     <p className='text-[24px] font-Avenir font-extrabold text-primary'><span className='text-[14px] text-base'>$</span>70.00</p>
                 </div>
             </div>
-           
 
-           
+
+
 
 
 
