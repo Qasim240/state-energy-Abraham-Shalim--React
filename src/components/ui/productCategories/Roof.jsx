@@ -1,185 +1,210 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable react/prop-types */
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   categoryIcon,
-  infoCircleIcon
+  infoCircleIcon,
 } from '../../../../imagesPath';
 import Input from '../Input';
+import Dropdown from '../Dropdown';
 import IconHeading from '../../utils/IconHeading';
 import AdderSelector from '../../utils/AdderSelector';
+import Counter from '../../utils/Counter';                 // ⬅ plus/minus component
 import AddToCardWedget from '../../utils/AddToCardWedget';
 import CustomSlider from '../../utils/CustomSlider';
 import BackBtn from '../../utils/BackBtn';
 import { useDispatch, useSelector } from 'react-redux';
-import Dropdown from '../Dropdown';
-import RoofSkeleton from '../../utils/RoofSkeleton.jsx';
-import { toast } from 'react-toastify';
+import RoofSkeleton from '../../utils/RoofSkeleton';
 import {
   useAddToCartMutation,
-  useEditCartItemMutation
-} from '../../../features/api/apiSlice.js';
+  useEditCartItemMutation,
+} from '../../../features/api/apiSlice';
 import { addToCart } from '../../../features/slices/userSlice.js';
 import { useForm, Controller } from 'react-hook-form';
-import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 
-// ✅ Validation schema
+/* ───────── validation ───────── */
 const schema = yup.object({
-  variant: yup.string().required('Please select a roof variant'),
-  square_footage: yup
-    .number()
-    .typeError('Square footage must be a number')
-    .required('Please enter square footage')
-    .positive('Must be positive'),
-  color: yup.string().required('Please select a color'),
+  category: yup.string().required(),
+  square_footage: yup.number().typeError('Number').positive().required(),
+  color: yup.string().required(),
 });
 
 const Roof = () => {
   const dispatch = useDispatch();
   const { cartId } = useParams();
-  const isEditMode = !!cartId;
+  const isEditMode = Boolean(cartId);
 
+  /* API hooks */
   const [addToCartApi, { isLoading }] = useAddToCartMutation();
-  const [editCartItemApi] = useEditCartItemMutation();
+  const [editCartItemApi]             = useEditCartItemMutation();
 
-  const categories = useSelector((state) => state.user.categories);
-  const cartItems = useSelector((state) => state.user.cart);
-  const existingCartItem = cartItems.find((item) => item.id == cartId);
-  const roofData = categories.find((cat) => cat.name.toLowerCase() === 'roof');
+  /* Redux state */
+  const categories = useSelector((s) => s.user.categories);
+  const cartItems  = useSelector((s) => s.user.cart);
 
-  const [selectedAdders, setSelectedAdders] = useState([]);
+  const roofData = categories.find((c) => c.name?.toLowerCase() === 'roof');
+  const existing = cartItems.find((c) => c.id == cartId);
 
+  if (!roofData) return <RoofSkeleton />;
+
+  const fields       = roofData.configuration.fields;
+  const addersMaster = roofData.adders;
+
+  /* helpers */
+  const getField = (n) => fields.find((f) => f.name === n) || {};
+  const label    = (n) => getField(n).label || n;
+  const unit     = (n) => getField(n).unit  || undefined;
+
+  /* -------- adder state with qty -------- */
+  const initialAdders = () => {
+    if (isEditMode && existing?.adders?.length) return existing.adders;
+    return [];
+  };
+  const [selectedAdders, setSelectedAdders] = useState(initialAdders);
+
+  /* form */
   const {
     control,
     handleSubmit,
-    formState: { errors },
     setValue,
-    watch
+    watch,
+    formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      variant: '',
+      category      : '',
       square_footage: '',
-      color: ''
-    }
+      color         : '',
+    },
   });
 
-  // Prefill form and adder data
+  /* pre-fill on edit */
   useEffect(() => {
-    if (!roofData) return;
+    if (!isEditMode || !existing) return;
+    fields.forEach(({ name }) => setValue(name, existing.configuration?.[name] ?? ''));
+  }, [isEditMode, existing, fields, setValue]);
 
-    const configFields = roofData.configuration?.fields || [];
+  /* reactive prices */
+  const category = watch('category');
+  const sqft     = +watch('square_footage') || 0;
 
-    configFields.forEach((field) => {
-      const name = field.name;
-      const defaultValue =
-        isEditMode && existingCartItem?.configuration?.[name]
-          ? existingCartItem.configuration[name]
-          : '';
-      setValue(name, defaultValue);
-    });
+  const pricePerSqft = useMemo(() => {
+    if (!category) return 0;
+    return +roofData.pricing?.[category]?.price_per_sqft || 0;
+  }, [category, roofData]);
 
-    const adderNames = isEditMode
-      ? existingCartItem?.adders?.map((a) => a.name) || []
-      : [];
-    setSelectedAdders(adderNames);
-  }, [roofData, isEditMode, existingCartItem, setValue]);
+  const addersCost = useMemo(() => {
+    return selectedAdders.reduce((sum, a) => {
+      const line =
+        a.type === 'dynamic'
+          ? +a.price * pricePerSqft * a.quantity
+          : +a.price * a.quantity;
+      return sum + line;
+    }, 0);
+  }, [selectedAdders, pricePerSqft]);
 
+  const subtotal   = sqft * pricePerSqft;
+  const grandTotal = subtotal + addersCost;
+
+  /* ---------- adder helpers ---------- */
   const toggleAdder = (name) => {
+    setSelectedAdders((prev) => {
+      const idx = prev.findIndex((p) => p.name === name);
+      if (idx > -1) return prev.filter((p) => p.name !== name);
+
+      const def = addersMaster.find((d) => d.name === name);
+      return [...prev, { ...def, quantity: def.min_qty ?? 1 }];
+    });
+  };
+
+  const updateQty = (name, val) => {
     setSelectedAdders((prev) =>
-      prev.includes(name)
-        ? prev.filter((a) => a !== name)
-        : [...prev, name]
+      prev.map((a) => (a.name === name ? { ...a, quantity: val } : a))
     );
   };
 
-  const handleAddOrUpdate = async (formData) => {
-    const configFields = roofData.configuration?.fields || [];
-
-    const configuration = {};
-    configFields.forEach((field) => {
-      const val = formData[field.name];
-      if (val !== undefined) {
-        configuration[field.name] = typeof val === 'number' ? val.toString() : val;
-      }
-    });
+  /* ---------- submit ---------- */
+  const onSubmit = async (data) => {
+    const configuration = {
+      category      : data.category,
+      square_footage: data.square_footage,
+      color         : data.color,
+    };
 
     const payload = {
-      category_id: roofData.id,
+      category_id       : roofData.id,
       configuration,
-      adders: selectedAdders.map((name) => {
-        const match = roofData.adders.find((a) => a.name === name);
-        return {
-          id: match.id,
-          name: match.name,
-          price: match.price.toString()
-        };
-      })
+      configuration_meta: { fields },
+      pricing_meta      : roofData.pricing,
+      adders            : selectedAdders.map((a) => ({
+        id       : a.id,
+        name     : a.name,
+        price    : a.price,
+        type     : a.type,
+        quantity : a.quantity,
+      })),
+      price: grandTotal,
     };
 
     try {
       if (isEditMode) {
         await editCartItemApi({ cartId, updatedData: payload }).unwrap();
-        toast.success('Updated cart item');
+        toast.success('Cart item updated');
       } else {
         const res = await addToCartApi(payload).unwrap();
-        if (res.success) {
-          dispatch(addToCart({ ...res.data.cart }));
-          toast.success('Added to cart');
-        }
+        if (res.success) dispatch(addToCart(res.data.cart));
+        toast.success('Added to cart');
       }
     } catch (err) {
-      toast.error(err.data?.message || 'Failed to submit cart');
+      toast.error(err?.data?.message || 'Failed to submit');
     }
   };
 
-  if (!roofData) return <RoofSkeleton />;
-
-  const { configuration, adders, detail_photo_url } = roofData;
-  const fieldMap = Object.fromEntries(
-    (configuration?.fields || []).map((f) => [f.name, f])
-  );
-
+  /* ---------- UI ---------- */
   return (
     <div className="grid grid-cols-12 gap-4">
       <div className="col-span-12 md:col-span-4 hidden md:block">
-        <BackBtn className="mb-3" link="/collection" />
-        <CustomSlider items={detail_photo_url ? [detail_photo_url] : []} />
+        <BackBtn link="/collection" className="mb-3" />
+        <CustomSlider items={[roofData.detail_photo_url]} />
       </div>
 
-      <div className="col-span-12 md:col-span-8 flex flex-col min-h-full mt-4">
+      <div className="col-span-12 md:col-span-8 flex flex-col mt-4">
         <div className="flex flex-col flex-grow">
+          {/* category */}
           <IconHeading
             primaryIcon={categoryIcon}
-            headingText="Choose Variant"
+            headingText="Choose Category"
             secondaryIcon={infoCircleIcon}
           />
-
-          <div className="flex gap-4 flex-wrap my-8">
-            {fieldMap.variant?.options?.map((variantOption) => (
+          <div className="flex flex-wrap gap-4 my-8">
+            {getField('category').options.map((opt) => (
               <label
-                key={variantOption}
-                className={`px-5 py-2 w-[100px] text-center rounded-full font-Avenir font-medium border cursor-pointer transition
-                  ${watch('variant') === variantOption
+                key={opt}
+                className={`px-5 py-2 w-[100px] text-center rounded-full font-medium border cursor-pointer transition
+                  ${watch('category') === opt
                     ? 'bg-base-dark text-white border-base'
-                    : 'bg-white text-black border-gray-300'
-                  }`}
+                    : 'bg-white text-black border-gray-300'}`}
               >
                 <input
                   type="radio"
-                  name="variant"
-                  value={variantOption}
                   className="hidden"
-                  checked={watch('variant') === variantOption}
-                  onChange={() => setValue('variant', variantOption)}
+                  value={opt}
+                  checked={watch('category') === opt}
+                  onChange={() => setValue('category', opt)}
                 />
-                {variantOption}
+                {opt}
               </label>
             ))}
-            {errors.variant && <p className="text-red-500 text-xs mt-1">{errors.variant.message}</p>}
           </div>
+          {errors.category && (
+            <p className="text-red-500 text-xs -mt-3 mb-3">{errors.category.message}</p>
+          )}
 
-          <div className="grid md:grid-cols-12 gap-4 mt-6">
+          {/* sqft + color */}
+          <div className="grid md:grid-cols-12 gap-4">
             <div className="col-span-6">
               <Controller
                 name="square_footage"
@@ -188,8 +213,8 @@ const Roof = () => {
                   <Input
                     {...field}
                     type="number"
-                    label={fieldMap.square_footage?.label}
-                    placeholder="2000"
+                    label={label('square_footage')}
+                    unit={unit('square_footage')}
                     error={errors.square_footage?.message}
                   />
                 )}
@@ -202,8 +227,8 @@ const Roof = () => {
                 render={({ field }) => (
                   <Dropdown
                     {...field}
-                    label={fieldMap.color?.label}
-                    options={fieldMap.color?.options || []}
+                    label={label('color')}
+                    options={getField('color').options}
                     error={errors.color?.message}
                   />
                 )}
@@ -211,17 +236,54 @@ const Roof = () => {
             </div>
           </div>
 
-          <IconHeading headingText="Adders" secondaryIcon={infoCircleIcon} />
+          {/* adders */}
+          <IconHeading headingText="Adders" secondaryIcon={infoCircleIcon} className="mt-6" />
           <AdderSelector
-            adders={adders.map((a) => a.name)}
-            selectedAdders={selectedAdders}
+            adders={addersMaster.map((a) => a.name)}
+            selectedAdders={selectedAdders.map((a) => a.name)}
             toggleAdder={toggleAdder}
           />
+
+          {/* quantity controls */}
+          {selectedAdders.length > 0 && (
+            <div className="mt-5 space-y-4">
+              {selectedAdders.map((a) => (
+                <div key={a.name} className="flex items-center gap-4">
+                  {/* <span className="flex-1">
+                    {a.name} ({a.type})
+                  </span> */}
+
+                  {/* Counter with min/max */}
+                  {/* <Counter
+                    value={a.quantity}
+                    onChange={(val) => updateQty(a.name, val)}
+                    min={a.min_qty}
+                    max={a.max_qty}
+                  /> */}
+
+                  {/* <span className="w-24 text-right">
+                    {(
+                      (a.type === 'dynamic'
+                        ? +a.price * pricePerSqft
+                        : +a.price) * a.quantity
+                    ).toLocaleString(undefined, {
+                      minimumFractionDigits: 2,
+                      maximumFractionDigits: 2,
+                    })}{' '}
+                    $
+                  </span> */}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <AddToCardWedget
-          totalPrice="200"
-          onAddToCart={handleSubmit(handleAddOrUpdate)}
+          totalPrice={grandTotal.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
+          onAddToCart={handleSubmit(onSubmit)}
           isLoading={isLoading}
           isEditMode={isEditMode}
         />

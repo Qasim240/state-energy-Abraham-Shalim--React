@@ -12,7 +12,8 @@ import { useGetCrmContactQuery } from '../../../features/api/apiSlice';
 const AddUSerInfo = () => {
 
     const contactId = useSelector(state => state.user.selectedAppointment.contactId);
-
+    const cartItems = useSelector((s) => s.user.cart);
+    const cartTotal = cartItems.reduce((sum, it) => sum + (Number(it.price) || 0), 0);
     const { data, isLoading, isError } = useGetCrmContactQuery(contactId, {
         skip: !contactId,
     });
@@ -82,7 +83,7 @@ const AddUSerInfo = () => {
 
                 {/* Sidebar section (PriceCard) - only appears on large screens */}
                 <div className="col-span-12 lg:col-span-4 mt-6 lg:mt-[40px]">
-                    <PriceCard />
+                    <PriceCard total={cartTotal} />
 
                     <Link to='/loan-finance'>
                         <PrimaryBtn className='w-full mt-4 '>

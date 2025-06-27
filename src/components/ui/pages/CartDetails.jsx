@@ -73,6 +73,19 @@ const CartDetails = () => {
         transformCartItem(item)
     );
 
+
+
+    const cartTotal = transformedItems.reduce(
+        (sum, it) => sum + (Number(it.price) || 0),
+        0,
+    );
+
+
+
+
+
+
+
     const isEditPage = location.pathname.includes('/collection/') && location.pathname.split('/').length === 4;
 
     return (
@@ -129,7 +142,7 @@ const CartDetails = () => {
 
             <div className="md:col-span-4 mt-6 md:mt-[55px]">
                 <div className="sticky bottom-0">
-                    <PriceCard />
+                    <PriceCard total={cartTotal} />
                     <Link to="/user-info">
                         <PrimaryBtn className="w-full mt-4">
                             <span className="mx-auto">Continue</span>

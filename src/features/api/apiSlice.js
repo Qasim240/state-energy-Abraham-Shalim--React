@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const apiSlice = createApi({
     reducerPath: 'api',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://192.168.100.131/state-energy/public/api/v1',
+        baseUrl: 'https://admin.myflenergy.com/api/v1',
         prepareHeaders: (headers, { getState }) => {
             headers.set('Accept', 'application/json');
             const user = getState().user.user;
@@ -126,7 +126,20 @@ export const apiSlice = createApi({
             }),
         }),
 
+        getFinanceAprOptions: builder.query({
+            query: () => ({
+                url: '/get-finance-apr-options',
+                method: 'GET'
+            }),
+        }),
 
+        calculateFinancingAmount: builder.query({
+            query: ({ renew_solar_apr, mosaic_apr }) => ({
+                url: `/calculate-financing-amount?renew_solar_apr=${renew_solar_apr}&mosaic_apr=${mosaic_apr}`,
+                method: 'GET',
+            }),
+            keepUnusedDataFor: 0, // always fetch fresh numbers
+        }),
 
 
     }),
@@ -145,5 +158,8 @@ export const {
     useGetCrmContactQuery,
     useCreateOrderMutation,
     useGetOrdersQuery,
-    useUpdateUserProfileMutation
+    useUpdateUserProfileMutation,
+    useGetFinanceAprOptionsQuery,
+    useCalculateFinancingAmountQuery,      // eager version (rarely used)
+    useLazyCalculateFinancingAmountQuery,
 } = apiSlice;
